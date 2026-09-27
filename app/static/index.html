@@ -118,7 +118,7 @@
     <aside class="panel">
       <p class="eyebrow">예측 투표</p>
       <h1 class="q" id="voteQ">신호가 가장 센 줄은?</h1>
-      <div class="seg" role="group" aria-label="투표 종류">
+      <div class="seg" id="voteSeg" role="group" aria-label="투표 종류">
         <button class="on" data-kind="strong">가장 센 줄</button>
         <button data-kind="weak">가장 약한 줄</button>
       </div>
@@ -134,11 +134,13 @@
     <canvas id="measureCanvas" width="700" height="980" aria-label="실시간 전파지도"></canvas>
     <aside class="panel">
       <p class="eyebrow">전파지도 만들기</p>
+      <div class="seg netseg" role="group" aria-label="어느 신호의 지도"></div>
       <h2>탐정 노드</h2>
       <p class="muted small">폰은 스스로 구역을 보냅니다. 측정 노드는 목록에서 누른 뒤 지도에서 구역을 누르세요.</p>
       <div class="nodelist" id="measureNodes"></div>
       <div class="legend" id="legend"></div>
-      <p class="muted small">동그라미 = 측정한 구역 · 옅은 색 = 측정값으로 짐작한 곳</p>
+      <div class="legend" id="legend2"></div>
+      <p class="muted small">큰 동그라미 = 구역 세기 · 작은 도트 = 탐정 폰이 찍은 자리와 와이파이 속도 · 옅은 색 = 짐작한 곳</p>
       <div class="qrbox small"><div class="qr" id="qrMeasure"></div><span>탐정 폰 접속<br><b class="mono" id="phoneUrl2">-</b></span></div>
     </aside>
   </div>
@@ -168,7 +170,9 @@
     <aside class="panel">
       <p class="eyebrow" id="declareDate">-</p>
       <h1 id="declareTitle">안심도서관 전파지도</h1>
+      <div class="seg netseg" role="group" aria-label="어느 신호의 지도"></div>
       <div class="result" id="result"></div>
+      <table class="cmp" id="cmp"></table>
       <div class="site">
         <span>집에서 우리 집 와이파이 명당 찾기</span>
         <b id="siteUrl">-</b>

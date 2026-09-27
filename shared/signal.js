@@ -20,5 +20,19 @@
     return "▮▮▮▮".slice(0, bars) + "▯▯▯▯".slice(0, 4 - bars);
   }
 
-  root.WTSignal = { LEVELS: LEVELS, LOST: LOST, level: level, barsText: barsText };
+  // 와이파이 속도(Mbps) 표시. 노트북 핫스팟까지 실제로 내려받은 속도라 세기와 함께 떨어진다.
+  var SPEEDS = [
+    { min: 40, color: "#1E9E4F", word: "아주 빠름" },
+    { min: 15, color: "#7DBB2E", word: "빠름" },
+    { min: 5, color: "#EDB920", word: "보통" },
+    { min: 1, color: "#EE7A22", word: "느림" },
+    { min: -Infinity, color: "#D63A2A", word: "아주 느림" }
+  ];
+  function speed(mbps, lost) {
+    if (lost || mbps === null || mbps === undefined) return { color: LOST.color, word: "측정 전" };
+    for (var i = 0; i < SPEEDS.length; i++) if (mbps >= SPEEDS[i].min) return SPEEDS[i];
+    return SPEEDS[SPEEDS.length - 1];
+  }
+
+  root.WTSignal = { LEVELS: LEVELS, LOST: LOST, SPEEDS: SPEEDS, level: level, barsText: barsText, speed: speed };
 })(typeof window !== "undefined" ? window : this);

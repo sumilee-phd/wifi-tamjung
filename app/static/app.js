@@ -4,7 +4,7 @@
   var S = window.WTSignal;
   var cfg = null, st = null;
   var stageIdx = 0, stageStart = Date.now(), ictStep = 0;
-  var voteKind = "strong", selNode = null, revealNode = null, frozen = null;
+  var voteKind = "strong", selNode = null, revealNode = null, frozen = null, mapNet = "ap";
   var pollTimer = null;
 
   function $(id) { return document.getElementById(id); }
@@ -46,6 +46,7 @@
     if (["ArrowRight", "PageDown", " "].indexOf(e.key) >= 0) { e.preventDefault(); next(); }
     else if (["ArrowLeft", "PageUp"].indexOf(e.key) >= 0) { e.preventDefault(); prev(); }
     else if (/^[0-9]$/.test(e.key) && +e.key < cfg.stages.length) go(+e.key);
+    else if (e.key === "n" || e.key === "N") { var ks = Object.keys(cfg.nets); setNet(ks[(ks.indexOf(mapNet) + 1) % ks.length]); }
     else if (e.key === "f" || e.key === "F") {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {});
       else document.exitFullscreen();
@@ -73,7 +74,7 @@
   }
 
   // ---------- 강연장 지도 (5구역) ----------
-  var ZONE_R = 0.85;
+  var ZONE_R = 0.75;
   function zoneName(code) { return cfg.zones[code] ? cfg.zones[code].name : code; }
   function zoneCodes() { return Object.keys(cfg.zones); }
 
@@ -86,11 +87,16 @@
     }
     return num / den;
   }
-  function zoneValues() {
-    var out = {};
-    if (!st) return out;
-    Object.keys(st.cells).forEach(function (c) { if (st.cells[c].rssi !== null && cfg.zones[c]) out[c] = st.cells[c].rssi; });
+  function zoneValues(net) {
+    var out = {}, cells = st && st.cells[net || mapNet];
+    if (!cells) return out;
+    Object.keys(cells).forEach(function (c) { if (cells[c].rssi !== null && cfg.zones[c]) out[c] = cells[c].rssi; });
     return out;
+  }
+  function setNet(net) {
+    mapNet = net;
+    document.querySelectorAll(".netseg button").forEach(function (b) { b.classList.toggle("on", b.dataset.net === net); });
+    render();
   }
   function argmax(obj, sign) {
     var best = null;
@@ -158,16 +164,36 @@
       }
     });
 
+    // 어느 신호의 지도인지 (저장 이미지에도 남도록 지도 안에 쓴다)
+    if (mode !== "vote") {
+      ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.fillRect(0, cv.height - 36, cv.width, 36);
+      ctx.fillStyle = "#102026"; ctx.font = "bold 22px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText(cfg.nets[mapNet] + (pts.length ? "" : " · 아직 측정값 없음"), 14, cv.height - 18);
+      ctx.textBaseline = "middle";
+    }
     // 노트북 핫스팟(AP)
     var ap = cfg.ap.pos;
     ctx.fillStyle = "#0B6F79"; ctx.beginPath(); ctx.arc(ap[0] * sc, ap[1] * sc, 26, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = "#FFFFFF"; ctx.font = "bold 18px sans-serif"; ctx.textAlign = "center"; ctx.fillText("AP", ap[0] * sc, ap[1] * sc);
 
-    // 구역에 놓인 노드·폰
+    // 탐정 폰: 찍은 자리에 도트, 색 = 와이파이 속도
+    if ((mode === "measure" || mode === "declare") && st) {
+      st.nodes.forEach(function (n) {
+        if (!n.pos) return;
+        var x = n.pos[0] * sc, y = n.pos[1] * sc, sp = S.speed(n.mbps, n.lost);
+        ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fillStyle = sp.color; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = "#FFFFFF"; ctx.stroke();
+        ctx.lineWidth = 1; ctx.strokeStyle = "#102026"; ctx.beginPath(); ctx.arc(x, y, 17, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = "#102026"; ctx.font = "bold 14px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(n.id + (n.mbps !== null && n.mbps !== undefined && !n.lost ? " " + Math.round(n.mbps) + "M" : ""), x, y + 33);
+      });
+      ctx.textBaseline = "middle";
+    }
+    // 구역에 놓인 측정 노드(폰은 위 도트로 표시)
     if (mode === "measure" && st) {
       var perZone = {};
       st.nodes.forEach(function (n) {
-        if (!n.spot || !cfg.zones[n.spot]) return;
+        if (!n.spot || !cfg.zones[n.spot] || n.pos) return;
         var i = perZone[n.spot] = (perZone[n.spot] || 0) + 1;
         var p = cfg.zones[n.spot].pos, ang = -Math.PI / 2 + (i - 1) * 0.9;
         var cx = p[0] * sc + Math.cos(ang) * (ZONE_R * sc + 14), cy = p[1] * sc + Math.sin(ang) * (ZONE_R * sc + 14);
@@ -261,8 +287,8 @@
       b.appendChild(el("span", "id", n.id));
       var mid = el("span"); var bars = el("div", "nbars", S.barsText(lv.bars)); bars.style.color = lv.color;
       mid.appendChild(bars);
-      var sub = n.src === "phone" ? "폰 · " + lv.word + (n.rtt ? " · 응답 " + n.rtt + "ms" : "")
-                                  : lv.word + (n.rssi !== null && !n.lost ? " · " + n.rssi + " dBm" : "");
+      var sub = n.src === "phone" ? "폰 · " + lv.word + (n.mbps !== null && n.mbps !== undefined ? " · " + n.mbps + " Mbps" : "") + (n.rtt ? " · " + n.rtt + "ms" : "")
+                                  : lv.word + (n.rssi !== null && !n.lost ? " · " + n.rssi + " dBm" : "") + (n.lib !== null && n.lib !== undefined ? " · 도서관 " + n.lib : "");
       mid.appendChild(el("div", "sub", sub));
       b.appendChild(mid); b.appendChild(el("span", "spot", n.spot ? zoneName(n.spot) : "구역 없음"));
       box.appendChild(b);
@@ -305,6 +331,27 @@
     }
     card("가장 센 곳 (초록 굵은 테두리)", r.predStrong, r.actualStrong);
     card("가장 약한 곳 (빨강 굵은 테두리)", r.predWeak, r.actualWeak);
+    // 세 가지 신호 비교: 구역 사이 차이가 클수록 자리마다 다르다
+    var t = $("cmp"); t.innerHTML = "<tr><th>신호</th><th>가장 센 곳</th><th>가장 약한 곳</th><th>차이</th></tr>";
+    Object.keys(cfg.nets).forEach(function (net) {
+      var v = zoneValues(net), ks = Object.keys(v), tr = el("tr", net === mapNet ? "on" : "");
+      tr.appendChild(el("td", "", cfg.nets[net]));
+      if (!ks.length) { var td = el("td", "muted", "측정 없음"); td.colSpan = 3; tr.appendChild(td); t.appendChild(tr); return; }
+      var hi = argmax(v, 1), lo = argmax(v, -1);
+      tr.appendChild(el("td", "", zoneName(hi))); tr.appendChild(el("td", "", zoneName(lo)));
+      tr.appendChild(el("td", "n", (v[hi] - v[lo]) + " dB"));
+      t.appendChild(tr);
+      if (net === "cell" && st && st.cell_gen) {  // 휴대폰 데이터를 통신 세대별로 나눠 보기
+        Object.keys(st.cell_gen).sort().forEach(function (g) {
+          var gv = {}; Object.keys(st.cell_gen[g]).forEach(function (z) { gv[z] = st.cell_gen[g][z].rssi; });
+          var h2 = argmax(gv, 1), l2 = argmax(gv, -1), r2 = el("tr");
+          r2.appendChild(el("td", "", "  └ " + g));
+          r2.appendChild(el("td", "", zoneName(h2))); r2.appendChild(el("td", "", zoneName(l2)));
+          r2.appendChild(el("td", "n", (gv[h2] - gv[l2]) + " dB"));
+          t.appendChild(r2);
+        });
+      }
+    });
   }
 
   // ---------- 이벤트 ----------
@@ -324,10 +371,17 @@
     $("playPreset").addEventListener("click", play.preset);
     $("playClear").addEventListener("click", play.clear);
 
-    document.querySelectorAll(".seg button").forEach(function (b) {
+    document.querySelectorAll(".netseg").forEach(function (seg) {
+      Object.keys(cfg.nets).forEach(function (net) {
+        var b = el("button", net === mapNet ? "on" : "", cfg.nets[net].replace(/\(.*\)/, ""));
+        b.dataset.net = net; b.addEventListener("click", function () { setNet(net); });
+        seg.appendChild(b);
+      });
+    });
+    document.querySelectorAll("#voteSeg button").forEach(function (b) {
       b.addEventListener("click", function () {
         voteKind = b.dataset.kind;
-        document.querySelectorAll(".seg button").forEach(function (o) { o.classList.toggle("on", o === b); });
+        document.querySelectorAll("#voteSeg button").forEach(function (o) { o.classList.toggle("on", o === b); });
         renderVote();
       });
     });
@@ -388,8 +442,15 @@
     });
 
     var legend = $("legend");
+    legend.appendChild(el("b", "", "구역: 세기"));
     S.LEVELS.concat([S.LOST]).forEach(function (lv) {
       var s = el("span"); var i = el("i"); i.style.background = lv.color; s.appendChild(i); s.appendChild(document.createTextNode(lv.word)); legend.appendChild(s);
+    });
+    var legend2 = $("legend2");
+    legend2.appendChild(el("b", "", "폰 도트: 속도"));
+    S.SPEEDS.forEach(function (sp) {
+      var s = el("span"); var i = el("i"); i.style.background = sp.color; i.style.borderRadius = "50%"; s.appendChild(i);
+      s.appendChild(document.createTextNode(sp.word + (isFinite(sp.min) ? " " + sp.min + "M+" : ""))); legend2.appendChild(s);
     });
   }
 

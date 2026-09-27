@@ -16,6 +16,7 @@ import time
 import urllib.request
 
 ZONES = {"ST": 4, "LW": 3, "CT": 2, "RW": 2, "EX": 1}  # 가상 폰 구역별 대표 막대 수
+ZPOS = {"ST": (6.2, 1.2), "LW": (1.2, 6.0), "CT": (4.6, 9.0), "RW": (8.8, 5.0), "EX": (5.6, 12.4)}  # 가상 폰이 찍은 자리
 
 
 def main():
@@ -55,7 +56,8 @@ def main():
             v = base[n] + random.uniform(-3, 3)
             if random.random() < 0.05:
                 v -= 20
-            msg = {"node_id": n, "zone": "--", "rssi": int(round(max(-100, v)))}
+            msg = {"node_id": n, "zone": "--", "rssi": int(round(max(-100, v))),
+                   "lib_rssi": int(round(-60 + random.uniform(-4, 4)))}  # 도서관 와이파이: 고르게 잡힘
             sock.sendto(json.dumps(msg).encode(), (a.host, a.port))
             try:
                 sock.recvfrom(16)
@@ -64,7 +66,10 @@ def main():
         for pid, z in phones:
             bars = max(0, min(4, ZONES[z] + random.choice([0, 0, 0, 1, -1])))
             try:
-                post("/api/phone", {"id": pid, "zone": z, "bars": bars, "rtt": random.uniform(4, 40)})
+                x, y = ZPOS[z]
+                post("/api/phone", {"id": pid, "zone": z, "bars": bars, "cell_bars": random.choice([2, 3, 3, 4]), "cell_gen": random.choice(["5G", "LTE"]),
+                                    "rtt": random.uniform(4, 40), "mbps": max(0.5, bars * 14 + random.uniform(-6, 6)),
+                                    "pos": [x + random.uniform(-0.3, 0.3), y + random.uniform(-0.3, 0.3)]})
             except OSError:
                 print(f"{pid}: 서버 응답 없음")
         time.sleep(a.interval)

@@ -6,8 +6,11 @@
 
 노드는 두 종류다.
 - 측정 노드(ESP32, N1~): 연결된 AP의 RSSI(dBm)를 UDP로 보낸다.
-- 폰 노드(P1~): 핫스팟에 접속한 참가자 폰이 /p 페이지에서 자기 구역과 와이파이 막대 수(0~4)를 보내고,
-  노트북까지의 응답 시간(RTT)을 자동으로 잰다. 웹은 dBm을 읽을 수 없어 막대 수를 대표 dBm으로 바꿔 지도에 쓴다.
+- 폰 노드(P1~): 핫스팟에 접속한 참가자 폰이 /p 페이지에서 구역, 와이파이 막대 수, 휴대폰 데이터(LTE·5G) 막대 수(0~4)를
+  보내고, 노트북까지의 응답 시간(RTT)을 자동으로 잰다. 웹은 dBm을 읽을 수 없어 막대 수를 대표 dBm으로 바꿔 지도에 쓴다.
+  통신 세기 외의 정보(이름, 위치, 기기 정보, IP)는 받거나 저장하지 않는다.
+
+측정망(net)은 셋이다: ap 우리 공유기(노트북 핫스팟), lib 도서관 와이파이(ESP32 스캔), cell 휴대폰 데이터(폰 막대).
 
 실행: python app/server.py
 """
@@ -46,8 +49,11 @@ def new_session(label):
             "samples": [], "placement": {}, "votes": {"strong": {}, "weak": {}}}
 
 
-state = {"session": new_session("리허설"), "live": {}, "src": {}, "phones": 0}  # live: node -> [(t, rssi), ...]
-BLOB = os.urandom(64 * 1024)  # 폰 응답 속도 측정용
+state = {"session": new_session("리허설"), "live": {}, "src": {}, "phones": 0, "lib": {}, "pos": {}, "mbps": {}}  # live: node -> [(t, rssi), ...]
+NETS = list(CONFIG["nets"].keys())
+GENS = ("5G", "LTE", "3G")  # 아이가 폰 상단 표시를 보고 고른 통신 세대 (웹은 직접 알 수 없음)  # ap 우리 공유기, lib 도서관 와이파이, cell 휴대폰 데이터
+RUN_ID = time.strftime("%H%M%S")  # 서버를 켤 때마다 바뀜. 폰은 이 값이 바뀌면 번호를 새로 받는다
+BLOB = os.urandom(256 * 1024)  # 폰 와이파이 속도(Mbps) 측정용 내려받기 파일
 
 
 def median_last(values):
@@ -56,6 +62,7 @@ def median_last(values):
 
 
 def ingest(msg, addr=None, src="node", extra=None):
+    """노드 한 건을 받는다. rssi는 노트북 핫스팟(ap) 세기, lib_rssi가 있으면 도서관 와이파이 세기도 함께 쌓는다."""
     node = str(msg.get("node_id", "")).strip()[:16]
     rssi = int(msg["rssi"])
     if not node or not (RSSI_MIN <= rssi <= RSSI_MAX):
@@ -71,9 +78,22 @@ def ingest(msg, addr=None, src="node", extra=None):
         live.append((now, rssi))
         del live[:-50]
         state["src"][node] = src
-        smp = {"t": now, "node": node, "spot": spot, "rssi": rssi, "src": src}
+        smp = {"t": now, "node": node, "spot": spot, "rssi": rssi, "src": src, "net": "ap"}
         smp.update(extra or {})
         s["samples"].append(smp)
+        lib = msg.get("lib_rssi")
+        if lib is not None and RSSI_MIN <= int(lib) <= RSSI_MAX:
+            state["lib"][node] = int(lib)
+            s["samples"].append({"t": now, "node": node, "spot": spot, "rssi": int(lib), "src": src, "net": "lib"})
+
+
+def add_cell(node, zone, cell_bars, gen):
+    """폰이 보고한 휴대폰 데이터(LTE/5G) 안테나 막대 수를 쌓는다."""
+    now = time.time()
+    with lock:
+        s = state["session"]
+        s["samples"].append({"t": now, "node": node, "spot": zone, "rssi": BARS_DBM[cell_bars], "src": "phone",
+                             "net": "cell", "bars": cell_bars, "gen": gen})
 
 
 def udp_loop():
@@ -113,15 +133,23 @@ def snapshot():
                 "lost": age is None or age > LOST_SEC,
                 "rate": round(sum(1 for t, _ in live if now - t <= 5) / 5, 1),
                 "rtt": state.get("rtt", {}).get(n),
+                "lib": state["lib"].get(n),
+                "pos": state["pos"].get(n),
+                "mbps": state["mbps"].get(n),
             })
-        by_spot = {}
+        by = {net: {} for net in NETS}
         for smp in s["samples"]:
             if smp["spot"]:
-                by_spot.setdefault(smp["spot"], []).append(smp["rssi"])
-        cells = {k: {"rssi": median_last(v), "n": len(v)} for k, v in by_spot.items()}
+                by.setdefault(smp.get("net", "ap"), {}).setdefault(smp["spot"], []).append(smp["rssi"])
+        cells = {net: {k: {"rssi": median_last(v), "n": len(v)} for k, v in zs.items()} for net, zs in by.items()}
+        by_gen = {}
+        for smp in s["samples"]:
+            if smp.get("net") == "cell" and smp.get("gen") and smp["spot"]:
+                by_gen.setdefault(smp["gen"], {}).setdefault(smp["spot"], []).append(smp["rssi"])
+        cell_gen = {g: {k: {"rssi": median_last(v), "n": len(v)} for k, v in zs.items()} for g, zs in by_gen.items()}
         return {"session": {"id": s["id"], "label": s["label"], "started": s["started"],
                             "count": len(s["samples"])},
-                "nodes": nodes, "cells": cells, "votes": s["votes"], "server_time": now}
+                "nodes": nodes, "cells": cells, "cell_gen": cell_gen, "votes": s["votes"], "server_time": now}
 
 
 def save_session(s, png_bytes=None):
@@ -129,11 +157,12 @@ def save_session(s, png_bytes=None):
     folder.mkdir(exist_ok=True)
     with open(folder / "samples.csv", "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
-        w.writerow(["time", "node", "src", "zone", "rssi", "bars", "rtt_ms"])
+        w.writerow(["time", "node", "src", "net", "gen", "zone", "rssi", "bars", "rtt_ms", "mbps", "x_m", "y_m"])
         for smp in s["samples"]:
             w.writerow([time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(smp["t"])),
-                        smp["node"], smp.get("src", ""), smp["spot"] or "", smp["rssi"],
-                        smp.get("bars", ""), smp.get("rtt", "")])
+                        smp["node"], smp.get("src", ""), smp.get("net", "ap"), smp.get("gen", ""), smp["spot"] or "", smp["rssi"],
+                        smp.get("bars", ""), smp.get("rtt", ""), smp.get("mbps", ""),
+                        *(smp.get("pos") or ["", ""])])
     (folder / "session.json").write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     if png_bytes:
         (folder / "map.png").write_bytes(png_bytes)
@@ -204,7 +233,7 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/api/state":
             return self.send_json(snapshot())
         if path == "/api/config":
-            return self.send_json({**CONFIG, "spots": SPOTS, "ips": local_ips(), "udp_port": UDP_PORT})
+            return self.send_json({**CONFIG, "spots": SPOTS, "ips": local_ips(), "udp_port": UDP_PORT, "run": RUN_ID})
         return super().do_GET()
 
     def do_POST(self):
@@ -238,13 +267,23 @@ class Handler(SimpleHTTPRequestHandler):
                     s["placement"][node] = zone
                 if body.get("rtt") is not None:
                     state.setdefault("rtt", {})[node] = round(float(body["rtt"]))
-                bars = body.get("bars")
-                if bars is None:
-                    return self.send_json({"ok": True})
-                bars = max(0, min(4, int(bars)))
+                if body.get("mbps") is not None:
+                    state["mbps"][node] = round(float(body["mbps"]), 1)
+                pos = body.get("pos")
+                if isinstance(pos, list) and len(pos) == 2:
+                    x, y = float(pos[0]), float(pos[1])
+                    if 0 <= x <= CONFIG["room"]["width_m"] and 0 <= y <= CONFIG["room"]["depth_m"]:
+                        state["pos"][node] = [round(x, 2), round(y, 2)]
+                bars, cell = body.get("bars"), body.get("cell_bars")
+                gen = body.get("cell_gen") if body.get("cell_gen") in GENS else ""
+                spot = s["placement"].get(node)
         if path == "/api/phone":
-            ingest({"node_id": node, "zone": zone or "", "rssi": BARS_DBM[bars]}, src="phone",
-                   extra={"bars": bars, "rtt": state.get("rtt", {}).get(node)})
+            if bars is not None:
+                ingest({"node_id": node, "zone": zone or "", "rssi": BARS_DBM[max(0, min(4, int(bars)))]}, src="phone",
+                       extra={"bars": int(bars), "rtt": state.get("rtt", {}).get(node),
+                              "mbps": state["mbps"].get(node), "pos": state["pos"].get(node)})
+            if cell is not None and spot:
+                add_cell(node, spot, max(0, min(4, int(cell))), gen)
             return self.send_json({"ok": True})
         with lock:
             s = state["session"]
@@ -260,6 +299,9 @@ class Handler(SimpleHTTPRequestHandler):
                 state["session"] = new_session(str(body.get("label", "세션"))[:20])
                 state["live"].clear()
                 state["rtt"] = {}
+                state["lib"] = {}
+                state["pos"] = {}
+                state["mbps"] = {}
                 return self.send_json({"ok": True, "archived": str(folder) if folder else None})
             if path == "/api/end":
                 png = None
