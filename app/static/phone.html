@@ -34,10 +34,13 @@
   .speed { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; }
   .speed i { width: 18px; height: 18px; border-radius: 50%; background: #9AA5AB; flex: none; }
   .hint { color: var(--ink3); font-size: 15px; margin: 0; }
+  .race { background: var(--ink); color: #fff; border-radius: 14px; padding: 12px 16px; font-size: 18px; font-weight: 800; line-height: 1.5; }
+  .race b { font-size: 30px; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <header><b>와이파이 탐정</b><span class="me" id="me">-</span></header>
+<div class="race" id="race" hidden></div>
 
 <section class="map">
   <h2>1. 지도에서 내 위치를 선택하세요</h2>
@@ -69,7 +72,7 @@
 (function () {
   "use strict";
   var S = window.WTSignal;
-  var cfg = null, others = [];
+  var cfg = null, others = [], raceActive = false, measuring = false;
   var id = null, pos = null, zone = null, bars = null, cbars = null, gen = null, rtt = null, mbps = null;
   function $(x) { return document.getElementById(x); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
@@ -164,6 +167,8 @@
 
   // ---------- 속도: 응답 시간 3회 중앙값 + 256KB 내려받기 ----------
   function measure() {
+    if (measuring) return;
+    measuring = true;
     var times = [];
     function ping() {
       var t0 = performance.now();
@@ -181,21 +186,37 @@
       $("speedDot").style.background = sp.color;
       $("speed").textContent = "내 와이파이 속도 " + mbps + " Mbps (" + sp.word + ") · 응답 " + Math.round(rtt) + "ms";
       draw();
-    }).catch(function () { $("speed").textContent = "노트북에 연결되지 않았어요"; mbps = null; });
+    }).catch(function () { $("speed").textContent = "노트북에 연결되지 않았어요"; mbps = null; })
+      .then(function () { measuring = false; if (raceActive && zone) send(); });
+  }
+  // 평소 5초, 명당 찾기 대결 중에는 2초마다 속도 측정
+  function measureLoop() { measure(); setTimeout(measureLoop, raceActive ? 2000 : 5000); }
+
+  function showRace(r) {
+    var box = $("race");
+    if (!r) { box.hidden = true; raceActive = false; return; }
+    raceActive = r.active;
+    var rank = 0, best = null;
+    r.ranking.forEach(function (x, i) { if (x.id === id) { rank = i + 1; best = x.best; } });
+    box.hidden = false;
+    box.innerHTML = r.active
+      ? "명당 찾기 대결 중 · 남은 시간 <b>" + r.remaining + "초</b><br>속도가 가장 빠른 위치를 찾아 이동하세요." +
+        (best !== null ? "<br>내 최고 " + best + " Mbps · 현재 " + rank + "위" : "")
+      : "대결 종료" + (best !== null ? " · 내 최고 " + best + " Mbps · " + rank + "위" : "") +
+        (r.ranking.length ? "<br>명당 탐정: " + r.ranking[0].id + " (" + r.ranking[0].best + " Mbps)" : "");
   }
 
   function pollOthers() {
     fetch("/api/state", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (s) {
-      others = s.nodes.filter(function (n) { return n.src === "phone"; }); draw();
+      others = s.nodes.filter(function (n) { return n.src === "phone"; }); draw(); showRace(s.race);
     }).catch(function () {});
   }
 
   function start() {
     try { pos = JSON.parse(store("wt-pos") || "null"); } catch (e) { pos = null; }
     if (pos) { zone = nearestZone(pos); $("zone").textContent = "가까운 구역: " + cfg.zones[zone].name; }
-    draw(); measure(); pollOthers();
-    setInterval(measure, 5000);
-    setInterval(pollOthers, 2000);
+    draw(); measureLoop(); pollOthers();
+    setInterval(pollOthers, 1000);
     setInterval(function () { if (zone && bars !== null) send(); }, 2000);
   }
 

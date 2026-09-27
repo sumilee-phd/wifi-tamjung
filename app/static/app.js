@@ -5,6 +5,11 @@
   var cfg = null, st = null;
   var stageIdx = 0, stageStart = Date.now(), ictStep = 0;
   var voteKind = "strong", selNode = null, revealNode = null, frozen = null, mapNet = "ap";
+  var measureTab = "nodes", revealTab = "exp", raceWasActive = false;
+  // 신호 막기 대결 상태
+  var teams = ["1조", "2조", "3조", "4조"], team = 0, scores = {};
+  var battle = { phase: "idle", t0: 0, vals: [], base: null, min: null, lost: false };
+  var BASE_MS = 3000, BLOCK_MS = 30000;
   var pollTimer = null;
 
   function $(id) { return document.getElementById(id); }
@@ -277,9 +282,29 @@
     });
   }
 
+  function renderRace() {
+    var r = st && st.race;
+    $("raceBoard").hidden = measureTab !== "race"; $("measureMain").hidden = measureTab === "race";
+    if (measureTab !== "race") return;
+    var tm = $("raceTimer");
+    if (!r) { tm.textContent = "60"; tm.classList.remove("done"); $("raceWinner").textContent = ""; $("raceRank").innerHTML = ""; return; }
+    tm.textContent = r.active ? r.remaining : "끝"; tm.classList.toggle("done", !r.active);
+    var box = $("raceRank"); box.innerHTML = "";
+    r.ranking.forEach(function (x) {
+      var li = el("li"); var name = el("span", "", x.id);
+      if (x.zone) name.appendChild(el("small", "", zoneName(x.zone)));
+      li.appendChild(name); li.appendChild(el("b", "", x.best + " Mbps")); box.appendChild(li);
+    });
+    if (!r.ranking.length) box.appendChild(el("p", "muted", r.active ? "탐정 폰의 속도 측정값을 기다리는 중입니다." : "기록이 없습니다."));
+    $("raceWinner").textContent = !r.active && r.ranking.length ? "명당 탐정: " + r.ranking[0].id + " · " + r.ranking[0].best + " Mbps" + (r.ranking[0].zone ? " · " + zoneName(r.ranking[0].zone) : "") : "";
+    if (raceWasActive && !r.active) api("/api/game", { type: "race", ranking: r.ranking });
+    raceWasActive = r.active;
+  }
+
   function renderMeasure() {
     drawRoom($("measureCanvas"), "measure");
     if (!st) return;
+    renderRace();
     var box = $("measureNodes"); box.innerHTML = "";
     st.nodes.forEach(function (n) {
       if (n.age === null && !n.spot) return;
@@ -314,6 +339,53 @@
     $("dbm").textContent = n && !n.lost && val !== null ? val + " dBm" + (n.src === "phone" ? " (폰 막대 기준)" : "") : "";
     $("after").textContent = n ? (n.lost ? "끊김" : S.barsText(lv.bars) + " " + val) : "-";
     $("before").textContent = frozen ? S.barsText(S.level(frozen).bars) + " " + frozen : "-";
+    $("revealWrap").classList.toggle("battlemode", revealTab === "battle");
+    $("battle").hidden = revealTab !== "battle"; $("compare").hidden = revealTab === "battle";
+    if (revealTab === "battle") updateBattle(n);
+  }
+
+  // ---------- 신호 막기 대결 ----------
+  function median(a) { var b = a.slice().sort(function (p, q) { return p - q; }); return b.length ? b[Math.floor(b.length / 2)] : null; }
+  function updateBattle(n) {
+    var now = Date.now(), v = n && !n.lost ? n.rssi3 : null;
+    if (battle.phase === "base") {
+      if (v !== null) battle.vals.push(v);
+      if (now - battle.t0 >= BASE_MS) {
+        battle.base = median(battle.vals); battle.phase = battle.base === null ? "idle" : "ready";
+        $("bMsg").textContent = battle.base === null ? "신호가 들어오지 않습니다. 노드를 확인하세요." : "기준값을 측정했습니다. ② 30초 막기 시작을 누르세요.";
+      }
+    } else if (battle.phase === "block") {
+      if (v === null) battle.lost = true; else battle.min = Math.min(battle.min, v);
+      if (now - battle.t0 >= BLOCK_MS) {
+        var minEff = battle.lost ? -100 : battle.min, drop = Math.max(0, battle.base - minEff), t = teams[team];
+        if (!scores[t] || drop > scores[t].drop) scores[t] = { drop: drop, full: battle.lost };
+        battle.phase = "done";
+        $("bMsg").textContent = t + " 결과: " + drop + " dB" + (battle.lost ? " (신호 끊김, 완전 차단)" : "") + ". 다음 조를 고르세요.";
+        api("/api/game", { type: "block", team: t, node: revealNode, base: battle.base, min: minEff, drop: drop, lost: battle.lost });
+        renderBoard();
+      }
+    }
+    var remain = battle.phase === "base" ? BASE_MS - (now - battle.t0) : battle.phase === "block" ? BLOCK_MS - (now - battle.t0) : 0;
+    $("bTime").textContent = remain > 0 ? Math.ceil(remain / 1000) + "초" : "-";
+    $("bBase").textContent = battle.base !== null ? battle.base : "-";
+    var shownMin = battle.phase === "block" || battle.phase === "done" ? (battle.lost ? "끊김" : battle.min) : "-";
+    $("bMin").textContent = shownMin;
+    $("bDrop").textContent = (battle.phase === "block" || battle.phase === "done") && battle.base !== null
+      ? (battle.lost ? "완전 차단" : (battle.base - battle.min) + " dB") : "-";
+  }
+  function renderTeams() {
+    var box = $("teams"); box.innerHTML = "";
+    teams.forEach(function (t, i) { var b = el("button", i === team ? "on" : "", t); b.dataset.i = i; box.appendChild(b); });
+    var plus = el("button", "pm", "+ 조"); plus.dataset.i = "plus"; box.appendChild(plus);
+    var minus = el("button", "pm", "− 조"); minus.dataset.i = "minus"; box.appendChild(minus);
+  }
+  function renderBoard() {
+    var box = $("board"); box.innerHTML = "";
+    var rows = teams.filter(function (t) { return scores[t]; }).sort(function (a, b) { return scores[b].drop - scores[a].drop; });
+    rows.forEach(function (t) {
+      var li = el("li"); li.appendChild(el("span", "", t)); li.appendChild(el("b", "", scores[t].full ? "완전 차단" : scores[t].drop + " dB")); box.appendChild(li);
+    });
+    if (!rows.length) box.appendChild(el("p", "muted", "아직 기록이 없습니다."));
   }
 
   function renderDeclare() {
@@ -412,6 +484,40 @@
     onPress("tally", function (b) { api("/api/votes", { kind: voteKind, key: b.dataset.key, delta: -1 }).then(poll); });
     onPress("measureNodes", function (b) { selNode = selNode === b.dataset.id ? null : b.dataset.id; render(); });
     onPress("revealChips", function (b) { revealNode = b.dataset.id; frozen = null; render(); });
+
+    function tabs(id, fn) {
+      document.querySelectorAll("#" + id + " button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.querySelectorAll("#" + id + " button").forEach(function (o) { o.classList.toggle("on", o === b); });
+          fn(b.dataset.tab); render();
+        });
+      });
+    }
+    tabs("measureTabs", function (t) { measureTab = t; });
+    tabs("revealTabs", function (t) { revealTab = t; });
+    $("raceStart").addEventListener("click", function () { raceWasActive = true; api("/api/race", { action: "start", sec: 60 }).then(poll); });
+    $("raceClear").addEventListener("click", function () { raceWasActive = false; api("/api/race", { action: "clear" }).then(poll); });
+
+    onPress("teams", function (b) {
+      if (battle.phase === "base" || battle.phase === "block") return;  // 측정 중에는 바꾸지 않음
+      if (b.dataset.i === "plus") { if (teams.length < 8) teams.push((teams.length + 1) + "조"); }
+      else if (b.dataset.i === "minus") { if (teams.length > 2) { delete scores[teams.pop()]; if (team >= teams.length) team = teams.length - 1; } }
+      else team = +b.dataset.i;
+      battle = { phase: "idle", t0: 0, vals: [], base: null, min: null, lost: false };
+      $("bMsg").textContent = teams[team] + " 차례입니다. ① 기준 측정부터 시작하세요.";
+      renderTeams(); renderBoard();
+    });
+    $("btnBase").addEventListener("click", function () {
+      if (!revealNode) { $("bMsg").textContent = "위에서 측정 노드를 먼저 고르세요."; return; }
+      battle = { phase: "base", t0: Date.now(), vals: [], base: null, min: null, lost: false };
+      $("bMsg").textContent = "기준값을 측정하는 중입니다. 노드에 손대지 마세요.";
+    });
+    $("btnBlock").addEventListener("click", function () {
+      if (battle.base === null || battle.phase === "base" || battle.phase === "block") { $("bMsg").textContent = "① 기준 측정을 먼저 하세요."; return; }
+      battle.phase = "block"; battle.t0 = Date.now(); battle.min = battle.base; battle.lost = false;
+      $("bMsg").textContent = teams[team] + " 막기 시작! 30초 동안 신호를 약하게 만드세요.";
+    });
+    renderTeams(); renderBoard();
 
     $("btnFreeze").addEventListener("click", function () {
       var n = st && st.nodes.filter(function (x) { return x.id === revealNode; })[0];

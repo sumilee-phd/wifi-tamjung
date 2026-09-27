@@ -46,10 +46,11 @@ lock = threading.Lock()
 
 def new_session(label):
     return {"id": time.strftime("%Y%m%d_%H%M%S"), "label": label, "started": time.time(),
-            "samples": [], "placement": {}, "votes": {"strong": {}, "weak": {}}}
+            "samples": [], "placement": {}, "votes": {"strong": {}, "weak": {}}, "games": []}
 
 
-state = {"session": new_session("리허설"), "live": {}, "src": {}, "phones": 0, "lib": {}, "pos": {}, "mbps": {}}  # live: node -> [(t, rssi), ...]
+state = {"session": new_session("리허설"), "live": {}, "src": {}, "phones": 0, "lib": {}, "pos": {}, "mbps": {},
+         "race": None}  # 명당 찾기 대결: {"start", "end", "best": {폰: 최고 Mbps}}  # live: node -> [(t, rssi), ...]
 NETS = list(CONFIG["nets"].keys())
 GENS = ("5G", "LTE", "3G")  # 아이가 폰 상단 표시를 보고 고른 통신 세대 (웹은 직접 알 수 없음)  # ap 우리 공유기, lib 도서관 와이파이, cell 휴대폰 데이터
 RUN_ID = time.strftime("%H%M%S")  # 서버를 켤 때마다 바뀜. 폰은 이 값이 바뀌면 번호를 새로 받는다
@@ -147,8 +148,15 @@ def snapshot():
             if smp.get("net") == "cell" and smp.get("gen") and smp["spot"]:
                 by_gen.setdefault(smp["gen"], {}).setdefault(smp["spot"], []).append(smp["rssi"])
         cell_gen = {g: {k: {"rssi": median_last(v), "n": len(v)} for k, v in zs.items()} for g, zs in by_gen.items()}
+        race = None
+        if state["race"]:
+            r = state["race"]
+            ranking = sorted(({"id": k, "best": v, "cur": state["mbps"].get(k), "zone": s["placement"].get(k)}
+                              for k, v in r["best"].items()), key=lambda x: -x["best"])
+            race = {"active": now < r["end"], "remaining": max(0, round(r["end"] - now)),
+                    "duration": round(r["end"] - r["start"]), "ranking": ranking}
         return {"session": {"id": s["id"], "label": s["label"], "started": s["started"],
-                            "count": len(s["samples"])},
+                            "count": len(s["samples"])}, "race": race,
                 "nodes": nodes, "cells": cells, "cell_gen": cell_gen, "votes": s["votes"], "server_time": now}
 
 
@@ -269,6 +277,9 @@ class Handler(SimpleHTTPRequestHandler):
                     state.setdefault("rtt", {})[node] = round(float(body["rtt"]))
                 if body.get("mbps") is not None:
                     state["mbps"][node] = round(float(body["mbps"]), 1)
+                    r = state["race"]
+                    if r and r["start"] <= time.time() <= r["end"]:  # 대결 중이면 최고 속도 갱신
+                        r["best"][node] = max(r["best"].get(node, 0), state["mbps"][node])
                 pos = body.get("pos")
                 if isinstance(pos, list) and len(pos) == 2:
                     x, y = float(pos[0]), float(pos[1])
@@ -287,6 +298,19 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json({"ok": True})
         with lock:
             s = state["session"]
+            if path == "/api/race":
+                act = body.get("action")
+                if act == "start":
+                    sec = max(10, min(300, int(body.get("sec", 60))))
+                    state["race"] = {"start": time.time(), "end": time.time() + sec, "best": {}}
+                elif act == "clear":
+                    state["race"] = None
+                else:
+                    return self.send_json({"error": "action은 start 또는 clear"}, 400)
+                return self.send_json({"ok": True})
+            if path == "/api/game":  # 대결 결과 기록 (세션 파일에 함께 저장)
+                s["games"].append({"t": time.time(), **{k: body[k] for k in list(body)[:12]}})
+                return self.send_json({"ok": True, "n": len(s["games"])})
             if path == "/api/votes":
                 kind, key, delta = body.get("kind"), body.get("key"), int(body.get("delta", 0))
                 if kind not in ("strong", "weak"):
@@ -302,6 +326,7 @@ class Handler(SimpleHTTPRequestHandler):
                 state["lib"] = {}
                 state["pos"] = {}
                 state["mbps"] = {}
+                state["race"] = None
                 return self.send_json({"ok": True, "archived": str(folder) if folder else None})
             if path == "/api/end":
                 png = None

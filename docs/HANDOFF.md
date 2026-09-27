@@ -16,6 +16,7 @@ cd wifi-tamjung
 
 - 스크립트 실행이 막히면: `powershell -ExecutionPolicy Bypass -File .\run.ps1 -Virtual`
 - 발표 화면 http://localhost:8600 · 숫자 키 0~7 단계 이동 · 좌우 화살표·리모컨 다음 · N 신호 전환 · F 전체 화면
+- 게임: 5단계 "명당 찾기 대결" 탭(탐정 폰 60초 속도 순위), 6단계 "신호 막기 대결" 탭(조별 30초, ESP32 dB 점수판)
 - 탐정 폰 페이지는 `/p` (발표 화면 QR)
 - 방화벽(관리자 PowerShell에서 한 번): `New-NetFirewallRule -DisplayName "WifiTamjung UDP 8601" -Direction Inbound -Protocol UDP -LocalPort 8601 -Action Allow`
 - macOS·Linux: `./run.sh --virtual`
