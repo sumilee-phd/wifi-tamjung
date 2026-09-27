@@ -1,0 +1,23 @@
+# secrets
+.env
+.env.*
+secrets.h
+config.local.*
+
+# data from sessions
+*.db
+sessions/
+exports/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# node
+node_modules/
+.vercel/
+
+# os
+.DS_Store
+Thumbs.db
