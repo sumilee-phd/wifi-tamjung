@@ -62,14 +62,14 @@
     var box = $("homeResult"); box.innerHTML = "";
     var done = home.rooms.filter(function (r) { return r.bars !== null; });
     if (done.length < 2) {
-      if (done.length === 1) box.appendChild(el("p", "", "방을 하나 더 재 보면 비교할 수 있어요."));
+      if (done.length === 1) box.appendChild(el("p", "", "방을 하나 더 조사하면 명당을 밝혀낼 수 있어요."));
       return;
     }
     var max = Math.max.apply(null, done.map(function (r) { return r.bars; }));
     var min = Math.min.apply(null, done.map(function (r) { return r.bars; }));
     var best = done.filter(function (r) { return r.bars === max; }).map(function (r) { return r.name; });
     var worst = done.filter(function (r) { return r.bars === min; }).map(function (r) { return r.name; });
-    box.appendChild(el("p", "eyebrow", "우리 집 명당"));
+    box.appendChild(el("p", "eyebrow", "미션 완료! 우리 집 명당은"));
     box.appendChild(el("p", "best", best.join(", ")));
     if (max !== min) box.appendChild(el("p", "", "가장 약한 곳은 " + worst.join(", ") + "이에요."));
     else box.appendChild(el("p", "", "모든 방이 같아요. 와이파이가 고르게 퍼진 집이에요."));
