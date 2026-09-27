@@ -8,6 +8,8 @@
   :root { --bg: #F4F7F8; --paper: #fff; --line: #CBD6DA; --ink: #102026; --ink3: #74878E; --accent: #0B6F79; color-scheme: light; }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
+  html { background: var(--bg); }
+  body { max-width: 560px; margin: 0 auto; }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
          padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px); display: flex; flex-direction: column; gap: 16px; }
   header { display: flex; justify-content: space-between; align-items: center; }
