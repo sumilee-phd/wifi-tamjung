@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>와이파이 탐정단</title>
+<meta name="description" content="도서관의 숨은 전파를 찾아라! 10월의 하늘 2026 대구 안심도서관 과학강연 · 전파 놀이터 · 우리 집 와이파이 명당 찾기">
+<meta property="og:title" content="와이파이 탐정단">
+<meta property="og:description" content="도서관의 숨은 전파를 찾아라! 10월의 하늘 2026 대구 안심도서관 과학강연">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="tabs" aria-label="바로 가기">
+  <a href="#about">강연</a>
+  <a href="#play">전파 놀이터</a>
+  <a href="#home">명당 찾기</a>
+  <a href="#learn">더 알아보기</a>
+  <a href="#map">도서관 전파지도</a>
+</nav>
+
+<header class="hero">
+  <div class="waves" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+  <p class="eyebrow">10월의 하늘 2026 · 과학자들의 재능기부 도서관 과학강연</p>
+  <h1>와이파이 탐정단</h1>
+  <p class="lede">도서관의 숨은 전파를 찾아라!</p>
+  <dl class="when">
+    <div><dt>언제</dt><dd>2026년 10월 31일 (토) 오후 2시</dd></div>
+    <div><dt>어디서</dt><dd>대구 안심도서관 시청각실</dd></div>
+    <div><dt>누구와</dt><dd>이수미 교수 · ICT폴리텍대학 정보통신학과</dd></div>
+  </dl>
+  <div class="cta">
+    <a class="btn primary" href="#play">전파 놀이터 해 보기</a>
+    <a class="btn" href="#home">우리 집 명당 찾기</a>
+  </div>
+</header>
+
+<main>
+
+<section id="about">
+  <p class="eyebrow">강연 소개</p>
+  <h2>와이파이 막대는 왜 자리마다 다를까?</h2>
+  <p>전파는 눈에 보이지 않지만, 재 보면 지도가 됩니다. 탐정단이 되어 시청각실의 전파를 추적하고, 모두 함께 "안심도서관 전파지도"를 완성해요.</p>
+  <ol class="steps">
+    <li><b>예측</b><span>와이파이가 가장 센 곳은 어디일까? 손을 들어 투표해요.</span></li>
+    <li><b>측정</b><span>탐정 폰과 측정 노드로 강단, 벽 쪽, 가운데, 비상구 쪽의 신호를 재요.</span></li>
+    <li><b>지도</b><span>잰 값이 화면 지도에 색으로 채워져요. 내 자리도 점으로 나와요.</span></li>
+    <li><b>반전</b><span>물통, 사람, 알루미늄 호일 앞에서 신호는 어떻게 될까요?</span></li>
+  </ol>
+  <div class="note">
+    <b>준비물은 없어요.</b> 스마트폰이 있으면 폰의 와이파이 막대를 함께 볼 수 있어요. 없어도 모두 참여할 수 있어요.
+  </div>
+</section>
+
+<section id="play">
+  <p class="eyebrow">전파 놀이터</p>
+  <h2>공유기를 옮기고 벽을 세워 보세요</h2>
+  <p>지도를 누르면 고른 것이 놓여요. 멀어질수록, 막힐수록 약해지는 걸 볼 수 있어요.</p>
+  <div class="play">
+    <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
+    <div class="tools" id="playTools" role="group" aria-label="놓을 것 고르기">
+      <button class="tool on" data-m="ap">공유기</button>
+      <button class="tool" data-m="wall">벽 8dB</button>
+      <button class="tool" data-m="water">물통 12dB</button>
+      <button class="tool" data-m="people">사람 6dB</button>
+      <button class="tool" data-m="foil">호일 25dB</button>
+      <button class="tool" data-m="erase">지우기</button>
+    </div>
+    <div class="row">
+      <button class="btn small" id="playPreset">도서관 예시</button>
+      <button class="btn small" id="playClear">모두 지우기</button>
+    </div>
+    <pre class="readout" id="playReadout">지도 위를 누르거나 가리키면 신호세기가 보여요.</pre>
+    <p class="fine">원리를 보여 주는 모형이에요. 거리에 따른 약해짐(20·log10 거리)과 장애물마다 정한 감쇠(dB)만 계산해서 실제 값과는 달라요.</p>
+  </div>
+</section>
+
+<section id="home">
+  <p class="eyebrow">숙제 · 우리 집 와이파이 명당 찾기</p>
+  <h2>우리 집에서 와이파이가 제일 센 방은?</h2>
+  <p>방마다 가서 폰 화면 맨 위의 와이파이 막대를 보고 눌러 주세요. 기록은 이 폰에만 저장되고 어디로도 보내지 않아요.</p>
+  <div class="rooms" id="rooms"></div>
+  <form class="addroom" id="addRoom">
+    <label for="roomName" class="sr">방 이름</label>
+    <input id="roomName" maxlength="12" placeholder="다른 방 이름 (예: 베란다)" autocomplete="off">
+    <button class="btn small" type="submit">방 추가</button>
+  </form>
+  <div class="result" id="homeResult" aria-live="polite"></div>
+  <div class="tips">
+    <b>명당을 넓히는 방법</b>
+    <ul>
+      <li>공유기는 집 가운데, 바닥보다 높은 곳에 두면 골고루 퍼져요.</li>
+      <li>어항, 물통, 냉장고 같은 물과 금속 옆은 피해요.</li>
+      <li>벽과 문을 여러 번 지나야 하는 방은 약해져요.</li>
+    </ul>
+  </div>
+  <button class="btn small ghost" id="homeReset">기록 모두 지우기</button>
+</section>
+
+<section id="learn">
+  <p class="eyebrow">더 알아보기</p>
+  <h2>ICT가 뭘까?</h2>
+  <div class="ict">
+    <div><b>I</b><span>Information</span><em>정보</em></div>
+    <div><b>C</b><span>Communication</span><em>통신</em></div>
+    <div><b>T</b><span>Technology</span><em>기술</em></div>
+  </div>
+  <p>정보를 멀리 있는 사람에게 전하는 기술이에요. 폰의 와이파이 막대, 라디오, 인터넷이 모두 ICT예요.</p>
+
+  <h3>우리나라 전파 이야기</h3>
+  <ol class="timeline">
+    <li><span class="yr">1885</span><div><b>한성전보총국, 첫 전신</b><p>9월 28일 한성(서울)과 제물포(인천)가 전선으로 연결되어 전보를 주고받았어요.</p>
+      <a href="https://encykorea.aks.ac.kr/Article/E0061753" target="_blank" rel="noopener">출처: 한국민족문화대백과사전</a></div></li>
+    <li><span class="yr">1927</span><div><b>경성방송국, 첫 라디오 방송</b><p>2월 16일 경성방송국(JODK)이 우리나라 첫 라디오 방송을 시작했어요. 이제 전선 없이 전파로 소리를 보냈어요.</p>
+      <a href="https://theme.archives.go.kr/next/koreaOfRecord/radio.do" target="_blank" rel="noopener">출처: 국가기록원</a></div></li>
+    <li><span class="yr">1996</span><div><b>CDMA 휴대전화, 세계에서 처음</b><p>우리나라가 CDMA 방식 휴대전화 서비스를 세계에서 처음으로 상용화했어요.</p>
+      <a href="https://www.etri.re.kr/45th/sub05_8.html" target="_blank" rel="noopener">출처: 한국전자통신연구원(ETRI)</a></div></li>
+    <li><span class="yr">2019</span><div><b>5G, 세계에서 처음</b><p>4월 3일 밤 11시, 우리나라에서 세계 첫 5G 스마트폰 개통이 이루어졌어요.</p>
+      <a href="https://www.korea.kr/news/policyNewsView.do?newsId=148859737" target="_blank" rel="noopener">출처: 대한민국 정책브리핑</a></div></li>
+  </ol>
+  <p class="fine">다음은 6G예요. 아직 서비스는 없고, 여러분이 어른이 될 즈음 쓰게 될 거예요.</p>
+
+  <h3>전파를 다루는 사람들</h3>
+  <div class="jobs">
+    <div><b>네트워크 엔지니어</b><span>학교, 회사, 도서관의 인터넷 길을 설계하고 지켜요.</span></div>
+    <div><b>무선 설계 전문가</b><span>공유기와 기지국을 어디에 둘지 재고 정해요. 오늘 우리가 한 전파지도 만들기가 바로 이 일이에요.</span></div>
+    <div><b>통신 장비 개발자</b><span>공유기, 폰, 기지국 안의 전자 회로와 프로그램을 만들어요.</span></div>
+  </div>
+  <p>이런 일을 배우는 곳 중 하나가 <a href="https://www.ict.ac.kr" target="_blank" rel="noopener">ICT폴리텍대학</a> 정보통신학과예요.</p>
+</section>
+
+<section id="map">
+  <p class="eyebrow">안심도서관 전파지도</p>
+  <h2>탐정단이 함께 만든 지도</h2>
+  <div class="soon">
+    <div class="bars4" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <p><b>10월 31일 강연이 끝나면 여기에 올라와요.</b><br>우리 공유기, 도서관 와이파이, 휴대폰 데이터 세 지도를 비교해 볼 수 있어요.</p>
+  </div>
+</section>
+
+<section class="prev">
+  <p class="eyebrow">지난 강연</p>
+  <h2>2025 · 소리의 과학</h2>
+  <p>작년 서산 대산도서관에서는 들리는 파동, 소리를 탐구했어요. 올해는 보이지 않는 파동, 전파를 찾아요.</p>
+  <a class="btn small" href="https://oct-sky2025.vercel.app" target="_blank" rel="noopener">퉁퉁퉁퉁! 소리의 과학 게임 실험실</a>
+</section>
+
+</main>
+
+<footer>
+  <p>와이파이 탐정단 · 이수미 · ICT폴리텍대학 정보통신학과</p>
+  <p>이 사이트는 방문자 정보를 모으지 않아요. 명당 찾기 기록은 이 기기에만 저장돼요.</p>
+</footer>
+
+<script src="shared/signal.js"></script>
+<script src="shared/playground.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

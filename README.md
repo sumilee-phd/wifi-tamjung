@@ -34,3 +34,8 @@ macOS·Linux 개발용: `./run.sh --virtual`
 - 발표 화면: http://localhost:8600 (숫자 키 0~7로 단계 이동, 좌우 화살표·리모컨으로 다음, F 전체 화면)
 - 탐정 폰: 핫스팟 접속 후 대기 화면의 QR (`/p`)
 - 측정 노드 펌웨어: `firmware/wifi_tamjung_node/` (secrets.example.h를 secrets.h로 복사해 핫스팟 이름·암호 입력)
+
+## 공개 사이트 (wifi-tamjung.vercel.app)
+
+`site/`가 원본이고, 배포 때 `shared/`(전파 놀이터·신호 규칙)를 함께 복사합니다(`vercel.json`).
+Vercel에서 이 저장소를 가져오면(Import) 설정 없이 그대로 배포됩니다. 프로젝트 이름은 `wifi-tamjung`.
