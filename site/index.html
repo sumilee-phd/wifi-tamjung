@@ -97,6 +97,36 @@
     </ul>
   </div>
   <button class="btn small ghost" id="homeReset">기록 모두 지우기</button>
+
+  <div class="mission2">
+    <p class="eyebrow">탐정 미션 2 · 내 폰의 안테나를 찾아라</p>
+    <h3>와이파이를 잡는 안테나는 화면이 아니라 테두리 안에 숨어 있어요</h3>
+    <div class="ant">
+      <svg viewBox="0 0 120 220" role="img" aria-label="폰 그림. 위쪽과 아래쪽 테두리에 안테나 선이 있다">
+        <rect x="14" y="6" width="92" height="208" rx="18" fill="var(--paper)" stroke="var(--ink2)" stroke-width="4"/>
+        <rect x="24" y="22" width="72" height="176" rx="6" fill="var(--accent-soft)"/>
+        <rect x="10" y="40" width="8" height="5" fill="var(--s1)"/><rect x="102" y="40" width="8" height="5" fill="var(--s1)"/>
+        <rect x="10" y="176" width="8" height="5" fill="var(--s1)"/><rect x="102" y="176" width="8" height="5" fill="var(--s1)"/>
+        <path d="M30 14 Q60 -2 90 14" fill="none" stroke="var(--s1)" stroke-width="3" stroke-dasharray="4 4"/>
+        <text x="60" y="112" text-anchor="middle" font-size="13" fill="var(--ink2)">화면</text>
+      </svg>
+      <ol>
+        <li><b>옆면을 살펴봐요.</b> 테두리에 가는 선(안테나 선)이 보이나요? 그 근처에 안테나가 있어요. 와이파이 안테나는 위쪽 가장자리에 많아요.</li>
+        <li><b>공유기에서 먼 방으로 가요.</b> 막대가 2~3칸인 곳이 좋아요.</li>
+        <li><b>위쪽 끝을 손으로 꼭 감싸고 10초 기다려요.</b> 막대는 조금 늦게 바뀌어요.</li>
+        <li><b>아래쪽 끝, 화면 가운데도 똑같이 해 봐요.</b></li>
+      </ol>
+    </div>
+    <p><b>어디를 감쌌을 때 막대가 가장 많이 줄었나요?</b></p>
+    <div class="antpick" id="antPick" role="group" aria-label="가장 약해진 곳 고르기">
+      <button type="button" data-a="top">위쪽 끝</button>
+      <button type="button" data-a="bottom">아래쪽 끝</button>
+      <button type="button" data-a="middle">화면 가운데</button>
+      <button type="button" data-a="none">차이 없음</button>
+    </div>
+    <p class="antres" id="antRes" aria-live="polite"></p>
+    <p class="fine">폰마다 안테나 자리가 조금씩 달라요. 그래서 직접 찾아보는 게 탐정의 일이에요.</p>
+  </div>
 </section>
 
 <section id="learn">

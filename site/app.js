@@ -107,4 +107,23 @@
   });
 
   render();
+
+  // ---------- 탐정 미션 2: 안테나 찾기 ----------
+  var ANT_KEY = "wt-antenna-v1";
+  var ANT_MSG = {
+    top: "명탐정! 와이파이 안테나는 위쪽 가장자리에 많아요. 폰을 쓸 때 위쪽을 손으로 덮지 않으면 더 잘 잡혀요.",
+    bottom: "좋은 발견! 이 폰은 아래쪽에도 안테나가 있나 봐요. 폰마다 안테나 자리가 달라요.",
+    middle: "화면 쪽은 안테나가 아니라서 보통 차이가 작아요. 한 번 더 위쪽 끝을 감싸 볼까요?",
+    none: "공유기와 너무 가까우면 차이가 잘 안 보여요. 더 먼 방에서 다시 해 봐요."
+  };
+  function antShow(a) {
+    document.querySelectorAll("#antPick button").forEach(function (b) { b.classList.toggle("on", b.dataset.a === a); });
+    $("antRes").textContent = a ? ANT_MSG[a] : "";
+  }
+  var antSaved = null;
+  try { antSaved = localStorage.getItem(ANT_KEY); } catch (e) {}
+  antShow(antSaved);
+  document.querySelectorAll("#antPick button").forEach(function (b) {
+    b.addEventListener("click", function () { try { localStorage.setItem(ANT_KEY, b.dataset.a); } catch (e) {} antShow(b.dataset.a); });
+  });
 })();
