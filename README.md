@@ -14,7 +14,7 @@
 | 공개 사이트 | 강연 소개, 전파 놀이터, 우리 집 와이파이 명당 찾기, 완성된 도서관 전파지도 |
 | 측정 노드 | ESP32 DevKit. 1초마다 신호세기를 UDP로 보냅니다 |
 
-자세한 요구사항은 [docs/PRD.md](docs/PRD.md)에 있습니다.
+자세한 요구사항은 [docs/PRD.md](docs/PRD.md), 다른 컴퓨터에서 이어서 작업할 때는 [docs/HANDOFF.md](docs/HANDOFF.md), 강연 슬라이드 원고는 [docs/SLIDES.md](docs/SLIDES.md).
 
 ## 만든 사람
 
