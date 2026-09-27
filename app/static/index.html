@@ -76,7 +76,7 @@
       <div class="plus">+</div>
       <div><b>T</b><span>Technology</span><em>기술</em></div>
     </div>
-    <p class="lede">폰의 와이파이 막대, 그게 바로 ICT예요.</p>
+    <p class="lede">스마트폰의 와이파이 신호 막대도 ICT의 한 예입니다.</p>
   </div>
   <div class="timeline" id="timeline" hidden>
     <p class="eyebrow">우리나라 전파 이야기</p>
@@ -95,7 +95,7 @@
     <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터"></canvas>
     <aside class="panel">
       <p class="eyebrow">전파 놀이터</p>
-      <h2>누르면 놓여요</h2>
+      <h2>공유기와 장애물 배치</h2>
       <div class="tools" id="playTools">
         <button class="tool on" data-m="ap">공유기</button>
         <button class="tool" data-m="wall">서가 8dB</button>
@@ -105,8 +105,8 @@
         <button class="tool" data-m="erase">지우기</button>
       </div>
       <div class="btnrow"><button class="btn" id="playPreset">도서관 예시</button><button class="btn" id="playClear">모두 지우기</button></div>
-      <pre class="readout" id="playReadout">지도 위를 가리키면 신호세기가 보여요.</pre>
-      <p class="muted small">멀어질수록, 막힐수록 약해집니다. 원리를 보여 주는 모형이라 실제 값과는 다릅니다.</p>
+      <pre class="readout" id="playReadout">지도를 가리키면 예상 신호 세기가 표시됩니다.</pre>
+      <p class="muted small">거리가 멀어지거나 장애물이 있으면 신호가 약해집니다. 원리 설명용 모형으로 실제 측정값과는 다릅니다.</p>
     </aside>
   </div>
 </section>
@@ -117,12 +117,12 @@
     <canvas id="voteCanvas" width="700" height="980" aria-label="예측 투표 지도"></canvas>
     <aside class="panel">
       <p class="eyebrow">예측 투표</p>
-      <h1 class="q" id="voteQ">신호가 가장 센 줄은?</h1>
+      <h1 class="q" id="voteQ">신호가 가장 강한 곳은?</h1>
       <div class="seg" id="voteSeg" role="group" aria-label="투표 종류">
-        <button class="on" data-kind="strong">가장 센 줄</button>
-        <button data-kind="weak">가장 약한 줄</button>
+        <button class="on" data-kind="strong">가장 강한 곳</button>
+        <button data-kind="weak">가장 약한 곳</button>
       </div>
-      <p class="muted">손든 수만큼 지도의 구역을 누르세요. 잘못 누르면 표에서 −.</p>
+      <p class="muted">손을 든 인원만큼 지도의 구역을 누르세요. 잘못 입력하면 표에서 −를 누르세요.</p>
       <div class="tally" id="tally"></div>
     </aside>
   </div>
@@ -136,11 +136,11 @@
       <p class="eyebrow">전파지도 만들기</p>
       <div class="seg netseg" role="group" aria-label="어느 신호의 지도"></div>
       <h2>탐정 노드</h2>
-      <p class="muted small">폰은 스스로 구역을 보냅니다. 측정 노드는 목록에서 누른 뒤 지도에서 구역을 누르세요.</p>
+      <p class="muted small">탐정 폰은 구역 정보를 직접 전송합니다. 측정 노드는 목록에서 선택한 뒤 지도에서 구역을 누르세요.</p>
       <div class="nodelist" id="measureNodes"></div>
       <div class="legend" id="legend"></div>
       <div class="legend" id="legend2"></div>
-      <p class="muted small">큰 동그라미 = 구역 세기 · 작은 도트 = 탐정 폰이 찍은 자리와 와이파이 속도 · 옅은 색 = 짐작한 곳</p>
+      <p class="muted small">큰 원 = 구역별 신호 세기 · 작은 점 = 탐정 폰의 위치와 와이파이 속도 · 옅은 색 = 측정값으로 추정한 영역</p>
       <div class="qrbox small"><div class="qr" id="qrMeasure"></div><span>탐정 폰 접속<br><b class="mono" id="phoneUrl2">-</b></span></div>
     </aside>
   </div>
@@ -157,8 +157,8 @@
     </div>
     <div class="compare">
       <div><span>실험 전</span><b id="before">-</b></div>
-      <button class="btn primary" id="btnFreeze">지금 값 고정</button>
-      <div><span>지금</span><b id="after">-</b></div>
+      <button class="btn primary" id="btnFreeze">현재 값 기록</button>
+      <div><span>현재</span><b id="after">-</b></div>
     </div>
   </div>
 </section>
@@ -177,7 +177,7 @@
         <span>탐정 미션: 우리 집 와이파이 명당을 찾아라</span>
         <b id="siteUrl">-</b>
       </div>
-      <p class="career">폰의 와이파이를 만들고 지키는 사람이 되고 싶다면, 이런 걸 배워요.</p>
+      <p class="career">와이파이와 통신망을 설계하고 운영하는 방법은 정보통신학과에서 배웁니다.</p>
       <div class="btnrow"><button class="btn primary" id="btnEnd">강연 종료 저장</button></div>
       <p class="muted small" id="endMsg"></p>
     </aside>

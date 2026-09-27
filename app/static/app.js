@@ -265,7 +265,7 @@
 
   function renderVote() {
     drawRoom($("voteCanvas"), "vote");
-    $("voteQ").textContent = voteKind === "strong" ? "신호가 가장 센 곳은?" : "신호가 가장 약한 곳은?";
+    $("voteQ").textContent = voteKind === "strong" ? "신호가 가장 강한 곳은?" : "신호가 가장 약한 곳은?";
     var t = $("tally"); t.innerHTML = "";
     var v = st ? st.votes[voteKind] : {};
     zoneCodes().forEach(function (k) {
@@ -312,7 +312,7 @@
     $("word").textContent = n ? lv.word : "노드를 켜 주세요";
     $("word").style.color = lv === S.LOST ? "" : lv.color;
     $("dbm").textContent = n && !n.lost && val !== null ? val + " dBm" + (n.src === "phone" ? " (폰 막대 기준)" : "") : "";
-    $("after").textContent = n ? (n.lost ? "사라짐" : S.barsText(lv.bars) + " " + val) : "-";
+    $("after").textContent = n ? (n.lost ? "끊김" : S.barsText(lv.bars) + " " + val) : "-";
     $("before").textContent = frozen ? S.barsText(S.level(frozen).bars) + " " + frozen : "-";
   }
 
@@ -325,14 +325,14 @@
     function card(label, pred, actual) {
       var c = el("div", "rcard" + (pred && pred === actual ? " hit" : ""));
       c.appendChild(el("span", "", label));
-      c.appendChild(el("b", "", "실제 " + (actual ? zoneName(actual) : "측정 부족")));
-      c.appendChild(el("div", "muted small", "예측 " + (pred ? zoneName(pred) : "없음") + (pred && pred === actual ? " · 정답 탐정!" : "")));
+      c.appendChild(el("b", "", "실제 " + (actual ? zoneName(actual) : "측정값 부족")));
+      c.appendChild(el("div", "muted small", "예측 " + (pred ? zoneName(pred) : "없음") + (pred && pred === actual ? " · 예측 적중" : "")));
       box.appendChild(c);
     }
-    card("가장 센 곳 (초록 굵은 테두리)", r.predStrong, r.actualStrong);
-    card("가장 약한 곳 (빨강 굵은 테두리)", r.predWeak, r.actualWeak);
+    card("신호가 가장 강한 곳 (초록 굵은 테두리)", r.predStrong, r.actualStrong);
+    card("신호가 가장 약한 곳 (빨강 굵은 테두리)", r.predWeak, r.actualWeak);
     // 세 가지 신호 비교: 구역 사이 차이가 클수록 자리마다 다르다
-    var t = $("cmp"); t.innerHTML = "<tr><th>신호</th><th>가장 센 곳</th><th>가장 약한 곳</th><th>차이</th></tr>";
+    var t = $("cmp"); t.innerHTML = "<tr><th>신호</th><th>가장 강한 곳</th><th>가장 약한 곳</th><th>차이(dB)</th></tr>";
     Object.keys(cfg.nets).forEach(function (net) {
       var v = zoneValues(net), ks = Object.keys(v), tr = el("tr", net === mapNet ? "on" : "");
       tr.appendChild(el("td", "", cfg.nets[net]));
@@ -427,7 +427,7 @@
       c.fillStyle = "#102026"; c.font = "900 88px sans-serif"; c.fillText(cfg.title, 90, 260);
       c.font = "32px sans-serif"; c.fillStyle = "#3E545C";
       c.fillText("와이파이 탐정단이 함께 측정했습니다", 90, 330);
-      c.fillText("진한 칸은 측정값(dBm), 옅은 색은 측정값으로 짐작한 곳", 90, 380);
+      c.fillText("진한 원은 측정값, 옅은 색은 측정값으로 추정한 영역", 90, 380);
       S.LEVELS.forEach(function (lv, i) {
         c.fillStyle = lv.color; c.fillRect(90, 440 + i * 56, 40, 40);
         c.fillStyle = "#102026"; c.font = "30px sans-serif"; c.fillText(lv.word, 150, 470 + i * 56);

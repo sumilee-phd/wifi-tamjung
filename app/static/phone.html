@@ -39,28 +39,28 @@
 <header><b>와이파이 탐정</b><span class="me" id="me">-</span></header>
 
 <section class="map">
-  <h2>1. 내 자리를 콕 찍어요</h2>
-  <canvas id="room" width="420" height="588" aria-label="시청각실 지도. 내 자리를 눌러요"></canvas>
-  <p class="zone" id="zone">지도에서 내 자리를 눌러 주세요</p>
+  <h2>1. 지도에서 내 위치를 선택하세요</h2>
+  <canvas id="room" width="420" height="588" aria-label="시청각실 지도. 내 위치를 누르세요"></canvas>
+  <p class="zone" id="zone">지도에서 내 위치를 눌러 주세요</p>
 </section>
 
 <section>
-  <h2>2. 내 폰의 와이파이 막대는 몇 칸?</h2>
-  <p class="hint">화면 맨 위 와이파이 표시를 보고 눌러요. 자리를 옮기면 다시 눌러요.</p>
+  <h2>2. 와이파이 신호 막대는 몇 칸인가요?</h2>
+  <p class="hint">화면 상단의 와이파이 표시를 확인하고 선택하세요. 위치를 옮기면 다시 선택하세요.</p>
   <div class="bars" id="bars"></div>
 </section>
 
 <section>
-  <h2>3. 휴대폰 데이터(LTE·5G) 막대는 몇 칸?</h2>
-  <p class="hint">와이파이 옆의 안테나 막대예요. 옆에 보이는 글자(5G, LTE)도 골라요. 안 보이면 넘어가도 돼요.</p>
+  <h2>3. 휴대폰 데이터(LTE·5G) 신호 막대는 몇 칸인가요?</h2>
+  <p class="hint">와이파이 표시 옆의 안테나 막대입니다. 함께 표시된 글자(5G, LTE)도 선택하세요. 표시가 없으면 건너뛰어도 됩니다.</p>
   <div class="gens" id="gens"></div>
   <div class="bars" id="cbars"></div>
 </section>
 
 <div class="status">
-  <span class="speed"><i id="speedDot"></i><span id="speed">와이파이 속도 재는 중…</span></span>
-  <span class="big" id="sent">아직 안 보냈어요</span>
-  <p class="hint">이 페이지는 통신 세기와 속도, 지도에 찍은 자리만 보내요. 이름이나 GPS 위치는 보내지 않아요.</p>
+  <span class="speed"><i id="speedDot"></i><span id="speed">와이파이 속도 측정 중…</span></span>
+  <span class="big" id="sent">아직 전송하지 않았어요</span>
+  <p class="hint">이 페이지는 신호 세기, 속도, 지도에서 선택한 위치만 전송해요. 이름이나 GPS 위치는 전송하지 않아요.</p>
 </div>
 
 <script src="/shared/signal.js"></script>
@@ -156,9 +156,9 @@
     if (!id) return;
     post("/api/phone", { id: id, zone: zone, pos: pos, bars: bars, cell_bars: cbars, cell_gen: gen, rtt: rtt, mbps: mbps }).then(function (r) {
       if (r.error) { $("sent").textContent = r.error; return; }
-      $("sent").textContent = !zone ? "지도에서 내 자리를 찍어 주세요" : bars === null ? "와이파이 막대 수를 눌러 주세요"
-        : cfg.zones[zone].name + " · 와이파이 " + bars + "칸" + (cbars !== null ? " · " + (gen || "데이터") + " " + cbars + "칸" : "") + " 보냈어요";
-    }).catch(function () { $("sent").textContent = "노트북과 연결이 끊겼어요"; });
+      $("sent").textContent = !zone ? "지도에서 내 위치를 선택해 주세요" : bars === null ? "와이파이 신호 막대 수를 선택해 주세요"
+        : cfg.zones[zone].name + " · 와이파이 " + bars + "칸" + (cbars !== null ? " · " + (gen || "데이터") + " " + cbars + "칸" : "") + " 전송했어요";
+    }).catch(function () { $("sent").textContent = "노트북과의 연결이 끊어졌어요"; });
   }
 
   // ---------- 속도: 응답 시간 3회 중앙값 + 256KB 내려받기 ----------
@@ -180,7 +180,7 @@
       $("speedDot").style.background = sp.color;
       $("speed").textContent = "내 와이파이 속도 " + mbps + " Mbps (" + sp.word + ") · 응답 " + Math.round(rtt) + "ms";
       draw();
-    }).catch(function () { $("speed").textContent = "노트북에 닿지 않아요"; mbps = null; });
+    }).catch(function () { $("speed").textContent = "노트북에 연결되지 않았어요"; mbps = null; });
   }
 
   function pollOthers() {

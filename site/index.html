@@ -42,22 +42,22 @@
 <section id="about">
   <p class="eyebrow">강연 소개</p>
   <h2>와이파이 막대는 왜 자리마다 다를까?</h2>
-  <p>전파는 눈에 보이지 않지만, 재 보면 지도가 됩니다. 탐정단이 되어 시청각실의 전파를 추적하고, 모두 함께 "안심도서관 전파지도"를 완성해요.</p>
+  <p>전파는 눈에 보이지 않지만, 신호 세기를 측정하면 지도로 나타낼 수 있습니다. 탐정단이 되어 시청각실의 전파를 추적하고, 함께 "안심도서관 전파지도"를 완성해요.</p>
   <ol class="steps">
-    <li><b>예측</b><span>와이파이가 가장 센 곳은 어디일까? 손을 들어 투표해요.</span></li>
-    <li><b>측정</b><span>탐정 폰과 측정 노드로 강단, 벽 쪽, 가운데, 비상구 쪽의 신호를 재요.</span></li>
-    <li><b>지도</b><span>잰 값이 화면 지도에 색으로 채워져요. 내 자리도 점으로 나와요.</span></li>
-    <li><b>반전</b><span>물통, 사람, 알루미늄 호일 앞에서 신호는 어떻게 될까요?</span></li>
+    <li><b>예측</b><span>와이파이 신호가 가장 강한 곳은 어디일까요? 손을 들어 예측해요.</span></li>
+    <li><b>측정</b><span>탐정 폰과 측정 노드로 강단, 양쪽 벽, 가운데, 비상구 쪽의 신호 세기를 측정해요.</span></li>
+    <li><b>지도</b><span>측정값이 화면 지도에 색으로 표시돼요. 내 위치도 점으로 표시돼요.</span></li>
+    <li><b>반전</b><span>물, 사람의 몸, 알루미늄 호일은 신호를 얼마나 약하게 만들까요?</span></li>
   </ol>
   <div class="note">
-    <b>준비물은 없어요.</b> 스마트폰이 있으면 폰의 와이파이 막대를 함께 볼 수 있어요. 없어도 모두 참여할 수 있어요.
+    <b>준비물은 없어요.</b> 스마트폰이 있으면 와이파이 신호 막대를 함께 확인할 수 있어요. 스마트폰이 없어도 모두 참여할 수 있어요.
   </div>
 </section>
 
 <section id="play">
   <p class="eyebrow">전파 놀이터</p>
-  <h2>공유기를 옮기고 벽을 세워 보세요</h2>
-  <p>지도를 누르면 고른 것이 놓여요. 멀어질수록, 막힐수록 약해지는 걸 볼 수 있어요.</p>
+  <h2>공유기와 장애물을 배치해 보세요</h2>
+  <p>항목을 고른 뒤 지도를 누르면 배치돼요. 거리가 멀어지거나 장애물이 있으면 신호가 약해지는 것을 확인할 수 있어요.</p>
   <div class="play">
     <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
     <div class="tools" id="playTools" role="group" aria-label="놓을 것 고르기">
@@ -72,15 +72,15 @@
       <button class="btn small" id="playPreset">도서관 예시</button>
       <button class="btn small" id="playClear">모두 지우기</button>
     </div>
-    <pre class="readout" id="playReadout">지도 위를 누르거나 가리키면 신호세기가 보여요.</pre>
-    <p class="fine">원리를 보여 주는 모형이에요. 거리에 따른 약해짐(20·log10 거리)과 장애물마다 정한 감쇠(dB)만 계산해서 실제 값과는 달라요.</p>
+    <pre class="readout" id="playReadout">지도를 누르거나 가리키면 그 위치의 예상 신호 세기가 표시돼요.</pre>
+    <p class="fine">원리 설명용 모형이에요. 거리에 따른 자유공간 감쇠(20·log10 거리)와 장애물별 감쇠(dB)만 계산하므로 실제 측정값과는 달라요.</p>
   </div>
 </section>
 
 <section id="home">
   <p class="eyebrow">탐정 미션 · 우리 집 와이파이 명당 찾기</p>
-  <h2>미션: 우리 집에서 와이파이가 제일 센 방을 찾아라!</h2>
-  <p>탐정단의 다음 사건 현장은 우리 집이에요. 방마다 가서 폰 화면 맨 위의 와이파이 막대를 보고 눌러 주세요. 기록은 이 폰에만 저장되고 어디로도 보내지 않아요.</p>
+  <h2>미션: 우리 집에서 와이파이 신호가 가장 강한 방을 찾아라!</h2>
+  <p>탐정단의 다음 사건 현장은 우리 집이에요. 방마다 이동해 폰 화면 상단의 와이파이 신호 막대를 확인하고 입력해 주세요. 기록은 이 폰에만 저장되고 외부로 전송되지 않아요.</p>
   <div class="rooms" id="rooms"></div>
   <form class="addroom" id="addRoom">
     <label for="roomName" class="sr">방 이름</label>
@@ -91,9 +91,9 @@
   <div class="tips">
     <b>탐정의 추리 노트: 명당을 넓히는 방법</b>
     <ul>
-      <li>공유기는 집 가운데, 바닥보다 높은 곳에 두면 골고루 퍼져요.</li>
-      <li>어항, 물통, 냉장고 같은 물과 금속 옆은 피해요.</li>
-      <li>벽과 문을 여러 번 지나야 하는 방은 약해져요.</li>
+      <li>공유기는 집 가운데, 바닥보다 높은 곳에 두면 신호가 고르게 전달돼요.</li>
+      <li>어항, 물통, 냉장고처럼 물과 금속이 있는 곳 옆은 피해요. 전파를 흡수하거나 반사해요.</li>
+      <li>전파가 벽과 문을 여러 번 통과해야 하는 방은 신호가 약해져요.</li>
     </ul>
   </div>
   <button class="btn small ghost" id="homeReset">기록 모두 지우기</button>
@@ -112,12 +112,12 @@
       </svg>
       <ol>
         <li><b>옆면을 살펴봐요.</b> 테두리에 가는 선(안테나 선)이 보이나요? 그 근처에 안테나가 있어요. 와이파이 안테나는 위쪽 가장자리에 많아요.</li>
-        <li><b>공유기에서 먼 방으로 가요.</b> 막대가 2~3칸인 곳이 좋아요.</li>
-        <li><b>위쪽 끝을 손으로 꼭 감싸고 10초 기다려요.</b> 막대는 조금 늦게 바뀌어요.</li>
+        <li><b>공유기에서 먼 방으로 이동해요.</b> 신호 막대가 2~3칸인 곳이 적당해요.</li>
+        <li><b>위쪽 끝을 손으로 감싸고 10초 기다려요.</b> 신호 막대는 몇 초 뒤에 반영돼요.</li>
         <li><b>아래쪽 끝, 화면 가운데도 똑같이 해 봐요.</b></li>
       </ol>
     </div>
-    <p><b>어디를 감쌌을 때 막대가 가장 많이 줄었나요?</b></p>
+    <p><b>어디를 감쌌을 때 신호 막대가 가장 많이 줄었나요?</b></p>
     <div class="antpick" id="antPick" role="group" aria-label="가장 약해진 곳 고르기">
       <button type="button" data-a="top">위쪽 끝</button>
       <button type="button" data-a="bottom">아래쪽 끝</button>
@@ -137,13 +137,13 @@
     <div><b>C</b><span>Communication</span><em>통신</em></div>
     <div><b>T</b><span>Technology</span><em>기술</em></div>
   </div>
-  <p>정보를 멀리 있는 사람에게 전하는 기술이에요. 폰의 와이파이 막대, 라디오, 인터넷이 모두 ICT예요.</p>
+  <p>정보를 멀리 떨어진 곳까지 전달하고 처리하는 기술이에요. 와이파이, 라디오, 인터넷이 모두 ICT에 속해요.</p>
 
   <h3>우리나라 전파 이야기</h3>
   <ol class="timeline">
     <li><span class="yr">1885</span><div><b>한성전보총국, 첫 전신</b><p>9월 28일 한성(서울)과 제물포(인천)가 전선으로 연결되어 전보를 주고받았어요.</p>
       <a href="https://encykorea.aks.ac.kr/Article/E0061753" target="_blank" rel="noopener">출처: 한국민족문화대백과사전</a></div></li>
-    <li><span class="yr">1927</span><div><b>경성방송국, 첫 라디오 방송</b><p>2월 16일 경성방송국(JODK)이 우리나라 첫 라디오 방송을 시작했어요. 이제 전선 없이 전파로 소리를 보냈어요.</p>
+    <li><span class="yr">1927</span><div><b>경성방송국, 첫 라디오 방송</b><p>2월 16일 경성방송국(JODK)이 우리나라 첫 라디오 방송을 시작했어요. 전선 없이 전파로 소리를 전송하기 시작했어요.</p>
       <a href="https://theme.archives.go.kr/next/koreaOfRecord/radio.do" target="_blank" rel="noopener">출처: 국가기록원</a></div></li>
     <li><span class="yr">1996</span><div><b>CDMA 휴대전화, 세계에서 처음</b><p>우리나라가 CDMA 방식 휴대전화 서비스를 세계에서 처음으로 상용화했어요.</p>
       <a href="https://www.etri.re.kr/45th/sub05_8.html" target="_blank" rel="noopener">출처: 한국전자통신연구원(ETRI)</a></div></li>
@@ -154,8 +154,8 @@
 
   <h3>전파를 다루는 사람들</h3>
   <div class="jobs">
-    <div><b>네트워크 엔지니어</b><span>학교, 회사, 도서관의 인터넷 길을 설계하고 지켜요.</span></div>
-    <div><b>무선 설계 전문가</b><span>공유기와 기지국을 어디에 둘지 재고 정해요. 오늘 우리가 한 전파지도 만들기가 바로 이 일이에요.</span></div>
+    <div><b>네트워크 엔지니어</b><span>학교, 회사, 도서관의 통신망을 설계하고 운영해요.</span></div>
+    <div><b>무선 설계 전문가</b><span>신호 세기를 측정해 공유기와 기지국의 위치를 설계해요. 오늘 탐정단이 한 전파지도 작성이 바로 이 일이에요.</span></div>
     <div><b>통신 장비 개발자</b><span>공유기, 폰, 기지국 안의 전자 회로와 프로그램을 만들어요.</span></div>
   </div>
   <p>이런 일을 배우는 곳 중 하나가 <a href="https://www.ict.ac.kr" target="_blank" rel="noopener">ICT폴리텍대학</a> 정보통신학과예요.</p>

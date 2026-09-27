@@ -20,7 +20,7 @@
   var KEY = "wt-home-v1";
   var DEFAULT = ["거실", "내 방", "안방", "부엌", "화장실", "현관"];
   var BAR_COLOR = ["var(--s0)", "var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)"];
-  var BAR_WORD = ["거의 없어요", "약해요", "보통", "세요", "아주 세요"];
+  var BAR_WORD = ["매우 약함", "약함", "보통", "강함", "매우 강함"];
   var home;
   try { home = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { home = null; }
   if (!home || !Array.isArray(home.rooms)) home = { rooms: DEFAULT.map(function (n) { return { name: n, bars: null, ap: false }; }) };
@@ -62,7 +62,7 @@
     var box = $("homeResult"); box.innerHTML = "";
     var done = home.rooms.filter(function (r) { return r.bars !== null; });
     if (done.length < 2) {
-      if (done.length === 1) box.appendChild(el("p", "", "방을 하나 더 조사하면 명당을 밝혀낼 수 있어요."));
+      if (done.length === 1) box.appendChild(el("p", "", "방을 하나 더 측정하면 비교할 수 있어요."));
       return;
     }
     var max = Math.max.apply(null, done.map(function (r) { return r.bars; }));
@@ -71,11 +71,11 @@
     var worst = done.filter(function (r) { return r.bars === min; }).map(function (r) { return r.name; });
     box.appendChild(el("p", "eyebrow", "미션 완료! 우리 집 명당은"));
     box.appendChild(el("p", "best", best.join(", ")));
-    if (max !== min) box.appendChild(el("p", "", "가장 약한 곳은 " + worst.join(", ") + "이에요."));
-    else box.appendChild(el("p", "", "모든 방이 같아요. 와이파이가 고르게 퍼진 집이에요."));
+    if (max !== min) box.appendChild(el("p", "", "신호가 가장 약한 곳은 " + worst.join(", ") + "이에요."));
+    else box.appendChild(el("p", "", "모든 방의 신호 세기가 같아요. 신호가 고르게 전달되는 집이에요."));
     var apRoom = home.rooms.filter(function (r) { return r.ap; })[0];
-    if (apRoom && best.indexOf(apRoom.name) >= 0) box.appendChild(el("p", "fine", "공유기와 가까울수록 세다는 걸 확인했어요."));
-    else if (apRoom && apRoom.bars !== null) box.appendChild(el("p", "fine", "공유기가 있는 방보다 센 곳이 있다면 전파가 지나가는 길을 살펴보세요."));
+    if (apRoom && best.indexOf(apRoom.name) >= 0) box.appendChild(el("p", "fine", "공유기와 가까울수록 신호가 강하다는 것을 확인했어요."));
+    else if (apRoom && apRoom.bars !== null) box.appendChild(el("p", "fine", "공유기가 있는 방보다 신호가 강한 곳이 있다면 전파가 지나가는 경로를 살펴보세요."));
     var chart = el("div", "chart");
     done.slice().sort(function (a, b) { return b.bars - a.bars; }).forEach(function (r) {
       var row = el("div");
@@ -111,10 +111,10 @@
   // ---------- 탐정 미션 2: 안테나 찾기 ----------
   var ANT_KEY = "wt-antenna-v1";
   var ANT_MSG = {
-    top: "명탐정! 와이파이 안테나는 위쪽 가장자리에 많아요. 폰을 쓸 때 위쪽을 손으로 덮지 않으면 더 잘 잡혀요.",
-    bottom: "좋은 발견! 이 폰은 아래쪽에도 안테나가 있나 봐요. 폰마다 안테나 자리가 달라요.",
-    middle: "화면 쪽은 안테나가 아니라서 보통 차이가 작아요. 한 번 더 위쪽 끝을 감싸 볼까요?",
-    none: "공유기와 너무 가까우면 차이가 잘 안 보여요. 더 먼 방에서 다시 해 봐요."
+    top: "정확해요. 와이파이 안테나는 위쪽 가장자리에 있는 경우가 많아요. 위쪽을 손으로 가리지 않으면 수신이 더 잘 돼요.",
+    bottom: "좋은 관찰이에요. 이 폰은 아래쪽에도 안테나가 있는 것 같아요. 기종마다 안테나 위치가 달라요.",
+    middle: "화면 쪽에는 안테나가 없어서 보통 차이가 작아요. 위쪽 끝을 감싸 한 번 더 측정해 볼까요?",
+    none: "공유기와 가까우면 신호가 충분히 강해서 차이가 잘 나타나지 않아요. 더 먼 방에서 다시 측정해 보세요."
   };
   function antShow(a) {
     document.querySelectorAll("#antPick button").forEach(function (b) { b.classList.toggle("on", b.dataset.a === a); });

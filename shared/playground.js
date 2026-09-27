@@ -3,7 +3,7 @@
 // 사용: WTPlayground.mount(canvas, { readout: el, onMode: fn })  → { setMode, preset, clear }
 (function (root) {
   var ATT = { wall: 8, water: 12, people: 6, foil: 25 };
-  var NAMES = { wall: "서가(벽)", water: "물통", people: "사람", foil: "호일" };
+  var NAMES = { wall: "서가(벽)", water: "물통", people: "사람(인체)", foil: "알루미늄 호일" };
   var ICON = { wall: "▦", water: "◍", people: "●", foil: "◈" };
 
   function mount(cv, opts) {
