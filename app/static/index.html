@@ -165,7 +165,7 @@
   <div class="reveal" id="revealWrap">
     <div class="seg tabseg" id="revealTabs" role="group" aria-label="반전 실험 또는 대결">
       <button class="on" data-tab="exp">반전 실험</button>
-      <button data-tab="battle">신호 막기 대결</button>
+      <button data-tab="battle">신호 막기 챌린지</button>
     </div>
     <div class="chips" id="revealChips"></div>
     <div class="meter" id="meter">
@@ -180,18 +180,22 @@
     </div>
     <div class="battle" id="battle" hidden>
       <div class="bctl">
-        <div class="teams" id="teams"></div>
-        <p class="muted small">조별로 30초 동안 측정 노드의 신호를 최대한 약하게 만드세요. 사용할 수 있는 것: 책, 물통, 손, 몸. 신호를 가장 많이 떨어뜨린 조가 이깁니다.</p>
+        <div class="who">
+          <label for="challenger">도전자</label>
+          <input id="challenger" maxlength="10" placeholder="이름 또는 별명 (비우면 도전자 번호)" autocomplete="off">
+          <button class="btn primary" id="btnChallenge">도전 시작</button>
+        </div>
+        <p class="muted small">3초 동안 기준값을 측정한 뒤, 10초 동안 측정 노드의 신호를 최대한 약하게 만드세요. 사용할 수 있는 것: 책, 물통, 손, 몸. 신호를 가장 많이 떨어뜨린 사람이 1위입니다.</p>
         <div class="bstat">
           <div><span>기준값</span><b id="bBase">-</b></div>
           <div><span>최저값</span><b id="bMin">-</b></div>
           <div><span>떨어뜨린 값</span><b id="bDrop">-</b></div>
           <div><span>남은 시간</span><b id="bTime">-</b></div>
         </div>
-        <div class="btnrow"><button class="btn" id="btnBase">① 기준 측정 (3초)</button><button class="btn primary" id="btnBlock">② 30초 막기 시작</button></div>
-        <p class="muted small" id="bMsg">조를 고르고 기준 측정부터 시작하세요.</p>
+        <p class="bmsg" id="bMsg">도전자를 정하고 도전 시작을 누르세요.</p>
+        <button class="btn small" id="btnBoardReset">랭킹 지우기</button>
       </div>
-      <div class="bboard"><h2>점수판</h2><ol class="rank" id="board"></ol></div>
+      <div class="bboard"><h2>신호 막기 랭킹</h2><ol class="rank" id="board"></ol></div>
     </div>
   </div>
 </section>
