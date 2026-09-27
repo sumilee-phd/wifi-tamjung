@@ -19,3 +19,18 @@
 ## 만든 사람
 
 이수미 · ICT폴리텍대학 정보통신학과
+
+## 실행
+
+강연용 Windows 노트북(Python 3.10 이상, 추가 설치 없음):
+
+```powershell
+.\run.ps1            # 실제 노드·폰으로 강연
+.\run.ps1 -Virtual   # 가상 노드로 시험
+```
+
+macOS·Linux 개발용: `./run.sh --virtual`
+
+- 발표 화면: http://localhost:8600 (숫자 키 0~7로 단계 이동, 좌우 화살표·리모컨으로 다음, F 전체 화면)
+- 탐정 폰: 핫스팟 접속 후 대기 화면의 QR (`/p`)
+- 측정 노드 펌웨어: `firmware/wifi_tamjung_node/` (secrets.example.h를 secrets.h로 복사해 핫스팟 이름·암호 입력)

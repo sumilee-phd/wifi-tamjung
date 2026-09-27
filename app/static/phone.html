@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>와이파이 탐정</title>
+<style>
+  :root { --bg: #F4F7F8; --paper: #fff; --line: #CBD6DA; --ink: #102026; --ink3: #74878E; --accent: #0B6F79; color-scheme: light; }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+         padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px); display: flex; flex-direction: column; gap: 18px; }
+  header { display: flex; justify-content: space-between; align-items: center; }
+  header b { font-size: 22px; }
+  .me { background: var(--accent); color: #fff; font-weight: 900; font-size: 22px; padding: 4px 14px; border-radius: 999px; }
+  h2 { margin: 0 0 8px; font-size: 20px; }
+  .zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .zones button, .bars button { font: inherit; border: 3px solid var(--line); background: var(--paper); border-radius: 14px; padding: 14px 6px; font-size: 18px; font-weight: 800; color: var(--ink); cursor: pointer; }
+  .zones button.on, .bars button.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .zones .st { grid-column: 1 / -1; }
+  .zones .ex { grid-column: 1 / -1; }
+  .bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .bars button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 2px; }
+  .bars .ic { display: flex; align-items: flex-end; gap: 3px; height: 30px; }
+  .bars .ic i { width: 7px; background: #D5DEE1; border-radius: 2px; }
+  .bars .ic i:nth-child(1) { height: 25%; } .bars .ic i:nth-child(2) { height: 50%; } .bars .ic i:nth-child(3) { height: 75%; } .bars .ic i:nth-child(4) { height: 100%; }
+  .bars .ic i.f { background: currentColor; }
+  .status { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 17px; display: flex; flex-direction: column; gap: 4px; }
+  .status .big { font-size: 26px; font-weight: 900; }
+  .hint { color: var(--ink3); font-size: 15px; margin: 0; }
+</style>
+</head>
+<body>
+<header><b>와이파이 탐정</b><span class="me" id="me">-</span></header>
+
+<section>
+  <h2>1. 나는 어느 구역에 있나요?</h2>
+  <div class="zones" id="zones"></div>
+</section>
+
+<section>
+  <h2>2. 내 폰의 와이파이 막대는 몇 칸?</h2>
+  <p class="hint">화면 맨 위 와이파이 표시를 보고 눌러요. 자리를 옮기면 다시 눌러요.</p>
+  <div class="bars" id="bars"></div>
+</section>
+
+<div class="status">
+  <span class="big" id="sent">아직 안 보냈어요</span>
+  <span id="speed">노트북까지 응답 속도 재는 중…</span>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var ZONES = [["ST", "강단", "st"], ["LW", "왼쪽 벽"], ["CT", "가운데"], ["RW", "오른쪽 벽"], ["EX", "비상구 쪽", "ex"]];
+  var id = null, zone = null, bars = null, rtt = null;
+  function $(x) { return document.getElementById(x); }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function post(path, body) {
+    return fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(function (r) { return r.json(); });
+  }
+
+  // 구역 버튼
+  ZONES.forEach(function (z) {
+    var b = document.createElement("button"); b.textContent = z[1]; b.dataset.z = z[0]; if (z[2]) b.className = z[2];
+    b.addEventListener("click", function () { zone = z[0]; store("wt-zone", zone); paint(); send(); });
+    $("zones").appendChild(b);
+  });
+  // 막대 버튼 0~4
+  for (var n = 0; n <= 4; n++) (function (n) {
+    var b = document.createElement("button"); b.dataset.n = n;
+    b.innerHTML = '<span class="ic">' + [1, 2, 3, 4].map(function (i) { return '<i class="' + (i <= n ? "f" : "") + '"></i>'; }).join("") + "</span>" + n + "칸";
+    b.addEventListener("click", function () { bars = n; paint(); send(); });
+    $("bars").appendChild(b);
+  })(n);
+
+  function paint() {
+    [].forEach.call($("zones").children, function (b) { b.classList.toggle("on", b.dataset.z === zone); });
+    [].forEach.call($("bars").children, function (b) { b.classList.toggle("on", +b.dataset.n === bars); });
+  }
+
+  function send() {
+    if (!id) return;
+    post("/api/phone", { id: id, zone: zone, bars: bars, rtt: rtt }).then(function (r) {
+      if (r.error) { $("sent").textContent = r.error; return; }
+      var zn = zone ? ZONES.filter(function (z) { return z[0] === zone; })[0][1] : null;
+      $("sent").textContent = !zone ? "구역을 골라 주세요" : bars === null ? "막대 수를 눌러 주세요" : zn + " · " + bars + "칸 보냈어요";
+    }).catch(function () { $("sent").textContent = "노트북과 연결이 끊겼어요"; });
+  }
+
+  // 노트북까지 응답 시간: 작은 요청 3번의 중앙값
+  function measure() {
+    var times = [], i = 0;
+    function one() {
+      var t0 = performance.now();
+      return fetch("/api/ping?_=" + Math.random(), { cache: "no-store" }).then(function () { times.push(performance.now() - t0); });
+    }
+    one().then(one).then(one).then(function () {
+      times.sort(function (a, b) { return a - b; }); rtt = times[1];
+      $("speed").textContent = "노트북까지 응답 " + Math.round(rtt) + "ms " + (rtt < 20 ? "(빠름)" : rtt < 60 ? "(보통)" : "(느림)");
+    }).catch(function () { $("speed").textContent = "노트북에 닿지 않아요"; });
+  }
+
+  function start() {
+    zone = store("wt-zone"); paint();
+    measure(); setInterval(measure, 3000);
+    setInterval(function () { if (zone && bars !== null) send(); }, 2000);  // 켜 두면 계속 보고
+  }
+  id = store("wt-id");
+  if (id) { $("me").textContent = id; start(); }
+  else post("/api/phone/join", {}).then(function (r) { id = r.id; store("wt-id", id); $("me").textContent = id; start(); })
+    .catch(function () { $("sent").textContent = "노트북 핫스팟에 먼저 접속해 주세요"; });
+})();
+</script>
+</body>
+</html>

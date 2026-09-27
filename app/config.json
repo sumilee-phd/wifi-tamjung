@@ -1,0 +1,130 @@
+{
+  "title": "안심도서관 전파지도",
+  "event": "10월의 하늘 2026",
+  "date": "2026-10-31",
+  "speaker": "이수미",
+  "dept": "ICT폴리텍대학 정보통신학과",
+  "site_url": "wifi-tamjung.vercel.app",
+  "http_port": 8600,
+  "udp_port": 8601,
+  "lost_sec": 3,
+  "window": 5,
+  "nodes": [
+    "N1",
+    "N2",
+    "N3",
+    "N4"
+  ],
+  "room": {
+    "width_m": 10,
+    "depth_m": 14,
+    "stage_depth_m": 1.9,
+    "rows": 6,
+    "row_start_m": 3.2,
+    "row_gap_m": 1.8,
+    "blocks": {
+      "L": {
+        "w": 1.6,
+        "a": 3.6
+      },
+      "R": {
+        "a": 6.4,
+        "w": 8.4
+      }
+    }
+  },
+  "stages": [
+    {
+      "key": "wait",
+      "name": "대기",
+      "min": 0
+    },
+    {
+      "key": "intro",
+      "name": "탐정단 임명",
+      "min": 5
+    },
+    {
+      "key": "ict",
+      "name": "ICT와 전파 이야기",
+      "min": 3
+    },
+    {
+      "key": "play",
+      "name": "전파 놀이터",
+      "min": 4
+    },
+    {
+      "key": "vote",
+      "name": "예측 투표",
+      "min": 5
+    },
+    {
+      "key": "measure",
+      "name": "전파지도 만들기",
+      "min": 12
+    },
+    {
+      "key": "reveal",
+      "name": "반전 실험",
+      "min": 6
+    },
+    {
+      "key": "declare",
+      "name": "전파지도 선포",
+      "min": 13
+    }
+  ],
+  "zones": {
+    "ST": {
+      "name": "강단",
+      "pos": [
+        5.0,
+        1.0
+      ]
+    },
+    "LW": {
+      "name": "왼쪽 벽",
+      "pos": [
+        0.7,
+        7.8
+      ]
+    },
+    "CT": {
+      "name": "가운데",
+      "pos": [
+        5.0,
+        7.8
+      ]
+    },
+    "RW": {
+      "name": "오른쪽 벽",
+      "pos": [
+        9.3,
+        7.8
+      ]
+    },
+    "EX": {
+      "name": "비상구 쪽",
+      "pos": [
+        5.0,
+        13.3
+      ]
+    }
+  },
+  "ap": {
+    "name": "노트북 핫스팟",
+    "pos": [
+      0.9,
+      0.8
+    ]
+  },
+  "phone_bars_dbm": [
+    -90,
+    -80,
+    -70,
+    -60,
+    -50
+  ],
+  "max_clients": 8
+}

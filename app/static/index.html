@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>와이파이 탐정단 · 강연 앱</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+<header class="top">
+  <nav class="stages" id="stages" aria-label="강연 단계"></nav>
+  <div class="status">
+    <span class="timer" id="timer" title="현재 단계 경과 / 배정 시간">00:00</span>
+    <span class="conn" id="conn"><i></i><span id="connText">연결 중</span></span>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 대기 -->
+<section data-stage="wait" hidden>
+  <div class="split">
+    <div>
+      <p class="eyebrow">대기 · 설치 점검</p>
+      <h1>노드 연결 확인</h1>
+      <div class="nodegrid" id="waitNodes"></div>
+    </div>
+    <aside class="panel">
+      <h2>세션</h2>
+      <p class="big" id="sessionLabel">-</p>
+      <p class="muted" id="sessionInfo">-</p>
+      <div class="btnrow">
+        <button class="btn" id="btnRehearsal">리허설 새로 시작</button>
+        <button class="btn primary" id="btnLive">본 강연 시작</button>
+      </div>
+      <p class="muted small">새로 시작하면 지금까지의 측정값은 sessions 폴더에 저장되고 화면이 비워집니다.</p>
+      <h2>폰으로 참여 (핫스팟 접속 후)</h2>
+      <div class="qrbox"><div class="qr" id="qrWait"></div><b class="mono" id="phoneUrl">-</b></div>
+      <p class="muted small">핫스팟 동시 접속은 최대 8대입니다. 측정 노드와 폰을 합쳐 8대 이내로.</p>
+      <h2>노드가 보낼 주소</h2>
+      <p class="mono" id="ipList">-</p>
+      <h2>점검 순서</h2>
+      <ol class="check">
+        <li>핫스팟 켜짐 · 2.4GHz · 절전 끔</li>
+        <li>노드 전원 → 10초 안에 초록</li>
+        <li>탐정 폰 QR 접속 → 구역·막대 입력 → 초록</li>
+        <li>노드를 흔들어도 값이 들어오는지</li>
+        <li>HDMI 연결, F키로 전체 화면</li>
+        <li>본 강연 시작 → 1번(탐정단 임명)으로</li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<!-- 1 탐정단 임명 -->
+<section data-stage="intro" hidden class="center">
+  <p class="eyebrow" id="introEvent">10월의 하늘</p>
+  <h1 class="hero">와이파이 탐정단</h1>
+  <p class="lede">도서관의 숨은 전파를 찾아라!</p>
+  <div class="case">
+    <span>오늘의 사건</span>
+    <strong>와이파이 막대는 왜 자리마다 다를까?</strong>
+  </div>
+  <p class="speaker" id="speaker">-</p>
+</section>
+
+<!-- 2 ICT와 전파 이야기 -->
+<section data-stage="ict" hidden>
+  <div class="ict" id="ictWord">
+    <p class="eyebrow">ICT가 뭘까?</p>
+    <div class="ictrow">
+      <div><b>I</b><span>Information</span><em>정보</em></div>
+      <div class="plus">+</div>
+      <div><b>C</b><span>Communication</span><em>통신</em></div>
+      <div class="plus">+</div>
+      <div><b>T</b><span>Technology</span><em>기술</em></div>
+    </div>
+    <p class="lede">폰의 와이파이 막대, 그게 바로 ICT예요.</p>
+  </div>
+  <div class="timeline" id="timeline" hidden>
+    <p class="eyebrow">우리나라 전파 이야기</p>
+    <ol>
+      <li data-step="1"><span class="yr">1885</span><b>한성전보총국</b><em>서울과 인천이 전선으로 통신</em></li>
+      <li data-step="2"><span class="yr">1927</span><b>경성방송국</b><em>우리나라 첫 라디오 방송</em></li>
+      <li data-step="3"><span class="yr">1996</span><b>CDMA 휴대전화</b><em>세계에서 처음 상용화</em></li>
+      <li data-step="4"><span class="yr">2019</span><b>5G</b><em>세계에서 처음 상용화</em></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 3 전파 놀이터 -->
+<section data-stage="play" hidden>
+  <div class="split wide">
+    <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터"></canvas>
+    <aside class="panel">
+      <p class="eyebrow">전파 놀이터</p>
+      <h2>누르면 놓여요</h2>
+      <div class="tools" id="playTools">
+        <button class="tool on" data-m="ap">공유기</button>
+        <button class="tool" data-m="wall">서가 8dB</button>
+        <button class="tool" data-m="water">물통 12dB</button>
+        <button class="tool" data-m="people">사람 6dB</button>
+        <button class="tool" data-m="foil">호일 25dB</button>
+        <button class="tool" data-m="erase">지우기</button>
+      </div>
+      <div class="btnrow"><button class="btn" id="playPreset">도서관 예시</button><button class="btn" id="playClear">모두 지우기</button></div>
+      <pre class="readout" id="playReadout">지도 위를 가리키면 신호세기가 보여요.</pre>
+      <p class="muted small">멀어질수록, 막힐수록 약해집니다. 원리를 보여 주는 모형이라 실제 값과는 다릅니다.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- 4 예측 투표 -->
+<section data-stage="vote" hidden>
+  <div class="split">
+    <canvas id="voteCanvas" width="700" height="980" aria-label="예측 투표 지도"></canvas>
+    <aside class="panel">
+      <p class="eyebrow">예측 투표</p>
+      <h1 class="q" id="voteQ">신호가 가장 센 줄은?</h1>
+      <div class="seg" role="group" aria-label="투표 종류">
+        <button class="on" data-kind="strong">가장 센 줄</button>
+        <button data-kind="weak">가장 약한 줄</button>
+      </div>
+      <p class="muted">손든 수만큼 지도의 구역을 누르세요. 잘못 누르면 표에서 −.</p>
+      <div class="tally" id="tally"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- 5 전파지도 만들기 -->
+<section data-stage="measure" hidden>
+  <div class="split">
+    <canvas id="measureCanvas" width="700" height="980" aria-label="실시간 전파지도"></canvas>
+    <aside class="panel">
+      <p class="eyebrow">전파지도 만들기</p>
+      <h2>탐정 노드</h2>
+      <p class="muted small">폰은 스스로 구역을 보냅니다. 측정 노드는 목록에서 누른 뒤 지도에서 구역을 누르세요.</p>
+      <div class="nodelist" id="measureNodes"></div>
+      <div class="legend" id="legend"></div>
+      <p class="muted small">동그라미 = 측정한 구역 · 옅은 색 = 측정값으로 짐작한 곳</p>
+      <div class="qrbox small"><div class="qr" id="qrMeasure"></div><span>탐정 폰 접속<br><b class="mono" id="phoneUrl2">-</b></span></div>
+    </aside>
+  </div>
+</section>
+
+<!-- 6 반전 실험 -->
+<section data-stage="reveal" hidden>
+  <div class="reveal">
+    <div class="chips" id="revealChips"></div>
+    <div class="meter" id="meter">
+      <div class="bars" id="bars"><i></i><i></i><i></i><i></i></div>
+      <p class="word" id="word">-</p>
+      <p class="dbm" id="dbm">-</p>
+    </div>
+    <div class="compare">
+      <div><span>실험 전</span><b id="before">-</b></div>
+      <button class="btn primary" id="btnFreeze">지금 값 고정</button>
+      <div><span>지금</span><b id="after">-</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 전파지도 선포 -->
+<section data-stage="declare" hidden>
+  <div class="split">
+    <canvas id="declareCanvas" width="700" height="980" aria-label="예측과 실제를 겹친 전파지도"></canvas>
+    <aside class="panel">
+      <p class="eyebrow" id="declareDate">-</p>
+      <h1 id="declareTitle">안심도서관 전파지도</h1>
+      <div class="result" id="result"></div>
+      <div class="site">
+        <span>집에서 우리 집 와이파이 명당 찾기</span>
+        <b id="siteUrl">-</b>
+      </div>
+      <p class="career">폰의 와이파이를 만들고 지키는 사람이 되고 싶다면, 이런 걸 배워요.</p>
+      <div class="btnrow"><button class="btn primary" id="btnEnd">강연 종료 저장</button></div>
+      <p class="muted small" id="endMsg"></p>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<script src="/static/vendor/qrcode.js"></script>
+<script src="/shared/signal.js"></script>
+<script src="/shared/playground.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
