@@ -29,10 +29,12 @@
 ## 노트북 쪽 준비
 
 - 모바일 핫스팟을 2.4GHz로 켠다. 사이버파이는 5GHz에 붙지 못한다.
+- 노트북의 상위 연결(인터넷 공유 원본)도 2.4GHz여야 한다. 노트북이 5GHz 와이파이에 붙어 있으면 설정이 2.4GHz여도 핫스팟이 5GHz로만 뜬다(G14 MediaTek MT7922에서 10/29 실측). 휴대폰 핫스팟 2.4GHz나 USB 테더링을 상위로 쓴다.
+- 핫스팟 절전(장치가 없으면 자동 끄기)은 끈다.
 - 방화벽에 UDP 8601 인바운드 허용(관리자 PowerShell 한 번): `New-NetFirewallRule -DisplayName "WifiTamjung UDP 8601" -Direction Inbound -Protocol UDP -LocalPort 8601 -Action Allow`
 - `.\run.ps1`로 서버를 띄운다. 노드는 핫스팟 게이트웨이(보통 192.168.137.1)를 서버로 자동 인식한다.
 
 ## 검증 기록
 
 - 2026-08-26 실습실: 사이버파이 → 와이파이 → 노트북 서버 UDP 8601 전 구간 실측(KIPEE 노드 코드). TCP와 urequests는 실패, UDP만 쓴다.
-- 2026-10-29: 이 코드의 전송 형식을 `app/server.py`에 보내 `ok` 응답과 `/api/state` 노드 표시(lib_rssi 포함)를 확인. 실기기 업로드·핫스팟 접속은 미확인.
+- 2026-10-29: 사이버파이 05 실기기 전 구간 확인. mBlock 5.6 업로드 → 핫스팟 SUMI(2.4GHz, WPA2) 접속 → UDP 8601 1초 전송 → 서버 `/api/state`에 -32dBm, 끊김 없음. 방화벽 규칙 없이도 수신됨. 처음 실패 원인은 노트북 상위 연결이 5GHz였던 것(위 준비 항목).
