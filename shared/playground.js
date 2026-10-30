@@ -28,6 +28,7 @@
     var ctx = cv.getContext("2d");
     var W = 24, H = 14, cw = cv.width / W, ch = cv.height / H;
     var grid, ap = { x: 2, y: 2 }, mode = "ap", drag = false;
+    var hint = opts.readout ? opts.readout.textContent : "";  // 예시·지우기 뒤에는 이전 칸의 숫자 대신 처음 안내로
 
     function reset() { grid = []; for (var y = 0; y < H; y++) grid.push(new Array(W).fill(null)); }
     function preset() {
@@ -88,8 +89,8 @@
     preset(); draw();
     return {
       setMode: function (m) { mode = m; if (opts.onMode) opts.onMode(m); },
-      preset: function () { preset(); draw(); },
-      clear: function () { reset(); draw(); },
+      preset: function () { preset(); draw(); if (opts.readout) opts.readout.textContent = hint; },
+      clear: function () { reset(); draw(); if (opts.readout) opts.readout.textContent = hint; },
       redraw: draw
     };
   }

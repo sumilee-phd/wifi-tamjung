@@ -134,7 +134,7 @@
   },
   "live": {
     "topic": "wifi-tamjung-yanggok-fbd09edb9d",
-    "min_interval": 20,
+    "min_interval": 45,
     "heartbeat": 180
   }
 }

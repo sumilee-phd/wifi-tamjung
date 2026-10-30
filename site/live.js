@@ -7,6 +7,7 @@
   var BASE = "https://ntfy.sh/" + TOPIC;
   var FRESH = 240;    // 초. 서버가 변화 없을 때 180초마다 보내므로 이 안에 받은 값이면 '실시간'
   var ZONE_R = 0.95;  // 구역 원 반지름(m). 휴대폰에서도 글자가 읽히게 강연 앱(0.75)보다 크게
+  var END = Date.parse("2026-10-31T16:00:00+09:00");  // ntfy는 12시간만 보관하므로, 이 뒤로 값이 없으면 대기 문구 대신 강연 끝 문구
   // 값이 오기 전에 빈 지도를 그릴 방 배치 (app/config.json과 같음)
   var ROOM = {
     room: { width_m: 10, depth_m: 14, stage_depth_m: 1.9, rows: 6, row_start_m: 3.2, row_gap_m: 1.8,
@@ -94,7 +95,11 @@
   }
 
   function status() {
-    if (!last) { box.classList.remove("on"); stateEl.textContent = "강연이 시작되면 실시간으로 채워져요"; ageEl.textContent = ""; return; }
+    if (!last) {
+      box.classList.remove("on"); ageEl.textContent = "";
+      stateEl.textContent = Date.now() > END ? "강연이 끝났어요. 완성된 지도를 곧 올려요" : "강연이 시작되면 실시간으로 채워져요";
+      return;
+    }
     var age = Math.max(0, Math.round(Date.now() / 1000 - lastTime)), on = age < FRESH;
     var tag = last.label && last.label !== "본강연" ? " (" + last.label + ")" : "";
     box.classList.toggle("on", on);

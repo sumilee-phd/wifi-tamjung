@@ -72,10 +72,17 @@
     var min = Math.min.apply(null, done.map(function (r) { return r.bars; }));
     var best = done.filter(function (r) { return r.bars === max; }).map(function (r) { return r.name; });
     var worst = done.filter(function (r) { return r.bars === min; }).map(function (r) { return r.name; });
-    box.appendChild(el("p", "eyebrow", "미션 완료! 우리 집 명당은"));
+    if (max === 0) {  // 모두 0칸이면 명당을 뽑지 않고 연결부터 확인하게 한다
+      box.appendChild(el("p", "eyebrow", "측정한 방이 모두 0칸이에요"));
+      box.appendChild(el("p", "", "폰 와이파이가 켜져 있는지, 집 와이파이에 연결돼 있는지 먼저 확인해 보세요."));
+      return;
+    }
+    var all = done.length === home.rooms.length;  // 아직 안 잰 방이 있으면 '미션 완료'·'모든 방'이라고 하지 않는다
+    box.appendChild(el("p", "eyebrow", all ? "미션 완료! 우리 집 명당은" : "지금까지 측정한 방 중 명당은"));
     box.appendChild(el("p", "best", best.join(", ")));
     if (max !== min) box.appendChild(el("p", "", "신호가 가장 약한 곳은 " + worst.join(", ") + "이에요."));
-    else box.appendChild(el("p", "", "모든 방의 신호 세기가 같아요. 신호가 고르게 전달되는 집이에요."));
+    else if (all) box.appendChild(el("p", "", "모든 방의 막대 수가 같아요. 막대에 나타나지 않는 작은 차이는 있을 수 있어요."));
+    else box.appendChild(el("p", "", "지금까지 측정한 방은 막대 수가 모두 같아요. 다른 방도 측정해 보세요."));
     var apRoom = home.rooms.filter(function (r) { return r.ap; })[0];
     if (apRoom && best.indexOf(apRoom.name) >= 0) box.appendChild(el("p", "fine", "공유기와 가까울수록 신호가 강하다는 것을 확인했어요."));
     else if (apRoom && apRoom.bars !== null) box.appendChild(el("p", "fine", "공유기가 있는 방보다 신호가 강한 곳이 있다면 전파가 지나가는 경로를 살펴보세요."));
