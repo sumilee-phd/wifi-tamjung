@@ -198,6 +198,12 @@ class Handler(SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass
 
+    def end_headers(self):
+        # 정적 파일도 매번 다시 확인하게 한다. 예전에 열었던 노트북 브라우저가 옛 app.js를 쓰지 않도록
+        if b"Cache-Control" not in b"".join(getattr(self, "_headers_buffer", [])):
+            self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def send_json(self, obj, code=200):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
@@ -334,6 +340,9 @@ class Handler(SimpleHTTPRequestHandler):
                 if data_url.startswith("data:image/png;base64,"):
                     png = base64.b64decode(data_url.split(",", 1)[1])
                 folder = save_session(s, png)
+                for net, url in (body.get("maps") or {}).items():  # 신호별 지도 map_ap.png, map_lib.png, map_cell.png
+                    if net in CONFIG["nets"] and str(url).startswith("data:image/png;base64,"):
+                        (folder / f"map_{net}.png").write_bytes(base64.b64decode(url.split(",", 1)[1]))
                 return self.send_json({"ok": True, "folder": str(folder)})
         return self.send_json({"error": "없는 주소입니다"}, 404)
 

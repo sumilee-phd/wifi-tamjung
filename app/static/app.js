@@ -389,6 +389,44 @@
     if (!records.length) box.appendChild(el("p", "muted", "아직 도전 기록이 없습니다."));
   }
 
+  function renderDeclare() {
+    var r = drawRoom($("declareCanvas"), "declare");
+    $("declareTitle").textContent = cfg.title;
+    $("declareDate").textContent = cfg.event + " · " + cfg.date;
+    $("siteUrl").textContent = cfg.site_url;
+    var box = $("result"); box.innerHTML = "";
+    function card(label, pred, actual) {
+      var c = el("div", "rcard" + (pred && pred === actual ? " hit" : ""));
+      c.appendChild(el("span", "", label));
+      c.appendChild(el("b", "", "실제 " + (actual ? zoneName(actual) : "측정값 부족")));
+      c.appendChild(el("div", "muted small", "예측 " + (pred ? zoneName(pred) : "없음") + (pred && pred === actual ? " · 예측 적중" : "")));
+      box.appendChild(c);
+    }
+    card("신호가 가장 강한 곳 (초록 굵은 테두리)", r.predStrong, r.actualStrong);
+    card("신호가 가장 약한 곳 (빨강 굵은 테두리)", r.predWeak, r.actualWeak);
+    // 세 가지 신호 비교: 구역 사이 차이가 클수록 자리마다 다르다
+    var t = $("cmp"); t.innerHTML = "<tr><th>신호</th><th>가장 강한 곳</th><th>가장 약한 곳</th><th>차이(dB)</th></tr>";
+    Object.keys(cfg.nets).forEach(function (net) {
+      var v = zoneValues(net), ks = Object.keys(v), tr = el("tr", net === mapNet ? "on" : "");
+      tr.appendChild(el("td", "", cfg.nets[net]));
+      if (!ks.length) { var td = el("td", "muted", "측정 없음"); td.colSpan = 3; tr.appendChild(td); t.appendChild(tr); return; }
+      var hi = argmax(v, 1), lo = argmax(v, -1);
+      tr.appendChild(el("td", "", zoneName(hi))); tr.appendChild(el("td", "", zoneName(lo)));
+      tr.appendChild(el("td", "n", (v[hi] - v[lo]) + " dB"));
+      t.appendChild(tr);
+      if (net === "cell" && st && st.cell_gen) {  // 휴대폰 데이터를 통신 세대별로 나눠 보기
+        Object.keys(st.cell_gen).sort().forEach(function (g) {
+          var gv = {}; Object.keys(st.cell_gen[g]).forEach(function (z) { gv[z] = st.cell_gen[g][z].rssi; });
+          var h2 = argmax(gv, 1), l2 = argmax(gv, -1), r2 = el("tr");
+          r2.appendChild(el("td", "", "  └ " + g));
+          r2.appendChild(el("td", "", zoneName(h2))); r2.appendChild(el("td", "", zoneName(l2)));
+          r2.appendChild(el("td", "n", (gv[h2] - gv[l2]) + " dB"));
+          t.appendChild(r2);
+        });
+      }
+    });
+  }
+
   // ---------- 이벤트 ----------
   function bind() {
     $("btnRehearsal").addEventListener("click", function () { api("/api/session/new", { label: "리허설" }).then(poll); });
@@ -483,24 +521,31 @@
     });
 
     $("btnEnd").addEventListener("click", function () {
-      var src = $("declareCanvas"), out = document.createElement("canvas");
-      out.width = 1920; out.height = 1080;
-      var c = out.getContext("2d");
-      c.fillStyle = "#FFFFFF"; c.fillRect(0, 0, 1920, 1080);
-      c.fillStyle = "#0B6F79"; c.font = "bold 36px sans-serif"; c.fillText(cfg.event + " · " + cfg.date, 90, 150);
-      c.fillStyle = "#102026"; c.font = "900 88px sans-serif"; c.fillText(cfg.title, 90, 260);
-      c.font = "32px sans-serif"; c.fillStyle = "#3E545C";
-      c.fillText("와이파이 탐정단이 함께 측정했습니다", 90, 330);
-      c.fillText("진한 원은 측정값, 옅은 색은 측정값으로 추정한 영역", 90, 380);
-      S.LEVELS.forEach(function (lv, i) {
-        c.fillStyle = lv.color; c.fillRect(90, 440 + i * 56, 40, 40);
-        c.fillStyle = "#102026"; c.font = "30px sans-serif"; c.fillText(lv.word, 150, 470 + i * 56);
-      });
-      c.fillStyle = "#3E545C"; c.font = "28px sans-serif"; c.fillText(cfg.speaker + " · " + cfg.dept, 90, 1000);
-      var h = 1000, w = h * src.width / src.height;
-      c.drawImage(src, 1920 - w - 60, 40, w, h);
+      var src = $("declareCanvas"), keep = mapNet, maps = {};
+      function compose() {
+        var out = document.createElement("canvas");
+        out.width = 1920; out.height = 1080;
+        var c = out.getContext("2d");
+        c.fillStyle = "#FFFFFF"; c.fillRect(0, 0, 1920, 1080);
+        c.fillStyle = "#0B6F79"; c.font = "bold 36px sans-serif"; c.fillText(cfg.event + " · " + cfg.date, 90, 150);
+        c.fillStyle = "#102026"; c.font = "900 88px sans-serif"; c.fillText(cfg.title, 90, 260);
+        c.font = "32px sans-serif"; c.fillStyle = "#3E545C";
+        c.fillText("와이파이 탐정단이 함께 측정했습니다", 90, 330);
+        c.fillText("진한 원은 측정값, 옅은 색은 측정값으로 추정한 영역", 90, 380);
+        S.LEVELS.forEach(function (lv, i) {
+          c.fillStyle = lv.color; c.fillRect(90, 440 + i * 56, 40, 40);
+          c.fillStyle = "#102026"; c.font = "30px sans-serif"; c.fillText(lv.word, 150, 470 + i * 56);
+        });
+        c.fillStyle = "#3E545C"; c.font = "28px sans-serif"; c.fillText(cfg.speaker + " · " + cfg.dept, 90, 1000);
+        var h = 1000, w = h * src.width / src.height;
+        c.drawImage(src, 1920 - w - 60, 40, w, h);
+        return out.toDataURL("image/png");
+      }
+      // 공개 사이트에 세 지도를 나란히 올릴 수 있도록 신호마다 한 장씩 만든다
+      Object.keys(cfg.nets).forEach(function (net) { mapNet = net; drawRoom(src, "declare"); maps[net] = compose(); });
+      mapNet = keep; render();
       $("endMsg").textContent = "저장 중…";
-      api("/api/end", { png: out.toDataURL("image/png") }).then(function (r) {
+      api("/api/end", { png: maps[keep], maps: maps }).then(function (r) {
         $("endMsg").textContent = r.ok ? "저장됨: " + r.folder : "저장 실패: " + (r.error || "");
       }).catch(function () { $("endMsg").textContent = "저장 실패: 서버에 연결할 수 없습니다"; });
     });
