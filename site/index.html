@@ -5,23 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>와이파이 탐정단</title>
 <meta name="description" content="도서관의 숨은 전파를 찾아라! 10월의 하늘 2026 김포시양곡도서관 과학강연 · 전파 놀이터 · 우리 집 와이파이 명당 찾기">
+<meta name="theme-color" content="#14264F">
 <meta property="og:title" content="와이파이 탐정단">
 <meta property="og:description" content="도서관의 숨은 전파를 찾아라! 10월의 하늘 2026 김포시양곡도서관 과학강연">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="preconnect" href="https://hangeul.pstatic.net" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="tabs" aria-label="바로 가기">
   <a href="#about">강연</a>
+  <a href="#korea">통신 강국</a>
   <a href="#play">전파 놀이터</a>
+  <a href="#antenna">안테나</a>
+  <a href="#map">전파지도</a>
+  <a href="#ai">AI와 진로</a>
   <a href="#home">탐정 미션</a>
-  <a href="#learn">더 알아보기</a>
-  <a href="#map">도서관 전파지도</a>
 </nav>
 
 <header class="hero">
+  <svg class="sky" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><path id="st" d="M0-1L.247-.34.951-.309.4.13.588.809 0 .42-.588.809-.4.13-.951-.309-.247-.34Z"/></defs>
+    <g fill="#FFFFFF">
+      <circle cx="40" cy="30" r="5"/><circle cx="240" cy="24" r="3.5"/><circle cx="420" cy="18" r="4"/><circle cx="560" cy="34" r="3"/>
+      <circle cx="790" cy="16" r="4"/><circle cx="990" cy="28" r="3.5"/><circle cx="1140" cy="30" r="6"/><circle cx="60" cy="200" r="3"/>
+      <circle cx="1170" cy="330" r="3.5"/><circle cx="30" cy="590" r="3.5"/><circle cx="1160" cy="480" r="4.5"/><circle cx="1110" cy="600" r="3.5"/>
+      <circle cx="560" cy="628" r="3"/>
+    </g>
+    <g fill="#FFB526">
+      <use href="#st" transform="translate(120 30) scale(15)"/><use href="#st" transform="translate(700 24) scale(12)"/>
+      <use href="#st" transform="translate(890 28) scale(19)"/><use href="#st" transform="translate(1165 210) scale(13)"/>
+      <use href="#st" transform="translate(36 340) scale(10)"/><use href="#st" transform="translate(44 520) scale(10)"/>
+    </g>
+  </svg>
   <div class="waves" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
   <p class="eyebrow">10월의 하늘 2026 · 과학자들의 재능기부 도서관 과학강연</p>
   <h1>와이파이 탐정단</h1>
@@ -30,11 +47,13 @@
     <div><dt>언제</dt><dd>2026년 10월 31일 (토) 오후 3시</dd></div>
     <div><dt>어디서</dt><dd>경기 김포시양곡도서관</dd></div>
     <div><dt>누구와</dt><dd>이수미 교수 · ICT폴리텍대학 정보통신학과</dd></div>
+    <div><dt>대상</dt><dd>초등 4학년 이상 · 40분 참여형 강연</dd></div>
   </dl>
   <div class="cta">
     <a class="btn primary" href="#play">전파 놀이터 해 보기</a>
     <a class="btn" href="#home">탐정 미션 받기</a>
   </div>
+  <p class="motto">오늘의 과학자가 내일의 과학자를 만나다</p>
 </header>
 
 <main>
@@ -42,22 +61,84 @@
 <section id="about">
   <p class="eyebrow">강연 소개</p>
   <h2>와이파이 막대는 왜 자리마다 다를까?</h2>
-  <p>전파는 눈에 보이지 않지만, 신호 세기를 측정하면 지도로 나타낼 수 있습니다. 탐정단이 되어 강연실의 전파를 추적하고, 함께 "양곡도서관 전파지도"를 완성해요.</p>
-  <ol class="steps">
-    <li><b>예측</b><span>와이파이 신호가 가장 강한 곳은 어디일까요? 손을 들어 예측해요.</span></li>
-    <li><b>측정</b><span>탐정 폰과 측정 노드로 강단, 양쪽 벽, 가운데, 비상구 쪽의 신호 세기를 측정해요.</span></li>
-    <li><b>지도</b><span>측정값이 화면 지도에 색으로 표시돼요. 내 위치도 점으로 표시돼요.</span></li>
-    <li><b>반전</b><span>물, 사람의 몸, 알루미늄 호일은 신호를 얼마나 약하게 만들까요?</span></li>
+  <p>폰을 꺼내 와이파이 막대를 보고, 옆자리로 한 칸 옮겨 다시 보세요. 막대 수가 달라졌나요? 전파는 눈에 보이지 않지만 신호 세기를 측정하면 지도로 그릴 수 있어요. 강연장의 전파를 추적해 함께 "양곡도서관 전파지도"를 완성해요.</p>
+  <p class="banner">오늘부터 여러분은 와이파이 탐정단입니다</p>
+  <h3>진행 순서</h3>
+  <ol class="flow">
+    <li><b>통신 강국이 되기까지</b><span>우리나라는 무슨 강국일까요? 전신에서 5G까지 네 장면을 따라가요.</span></li>
+    <li><b>탐정단 임명</b><span>자리마다 와이파이 막대가 다른 사건을 맡아요.</span></li>
+    <li><b>전파의 원리</b><span>소리와 전파는 둘 다 파동이에요. 전파가 약해지는 이유와 dBm 읽는 법을 배워요.</span></li>
+    <li><b>예측 투표</b><span>신호가 가장 강한 곳과 가장 약한 곳을 손들어 골라요.</span></li>
+    <li><b>전파지도 만들기</b><span>탐정 폰과 탐정 노드로 12분 동안 측정하고, 예측과 겹쳐 봐요.</span></li>
+    <li><b>반전 실험</b><span>물통, 손, 알루미늄 호일로 신호 막기 챌린지를 해요.</span></li>
+    <li><b>안테나 관찰</b><span>안테나 길이와 파장, 차 안테나와 내 폰의 안테나를 살펴봐요.</span></li>
+    <li><b>양곡도서관 전파지도</b><span>오늘 측정한 세 가지 신호를 비교하고 지도를 완성해요.</span></li>
+    <li><b>AI와 진로</b><span>AI가 전파를 타고 오는 길과 전파를 다루는 사람들을 만나요.</span></li>
+    <li><b>탐정 미션과 질문</b><span>집에서 할 미션 두 가지를 받고, 궁금한 것을 물어봐요.</span></li>
   </ol>
   <div class="note">
-    <b>준비물은 없어요.</b> 스마트폰이 있으면 와이파이 신호 막대를 함께 확인할 수 있어요. 스마트폰이 없어도 모두 참여할 수 있어요.
+    <b>준비물은 없어요.</b> 스마트폰이 있으면 와이파이 막대를 함께 봐요. 측정에 쓰는 탐정 폰은 4대까지 연결되고, 나머지 탐정은 사람 벽과 기록을 맡아요.
   </div>
+</section>
+
+<section id="korea">
+  <p class="eyebrow">통신 강국이 되기까지</p>
+  <h2>우리나라는 무슨 강국일까요?</h2>
+  <p>지금은 어디서나 와이파이가 되지만 50년 전에는 전화 한 대도 귀했어요. 네 장면으로 따라가 봐요.</p>
+  <ol class="scenes">
+    <li>
+      <p class="no">장면 1</p>
+      <h3>50년 전, 기술 불모지였던 대한민국에</h3>
+      <div class="ev"><span class="yr">1976</span><div><b>한국전자통신연구원(ETRI)의 시작</b><p>12월 30일, ETRI의 전신인 한국전자기술연구소가 문을 열었어요.</p>
+        <a href="https://www.etri.re.kr/45th/sub05_1.html" target="_blank" rel="noopener">출처: ETRI 45주년 연구성과</a></div></div>
+    </li>
+    <li>
+      <p class="no">장면 2</p>
+      <h3>전선을 타던 신호에서 공기를 타는 전파로</h3>
+      <div class="ev"><span class="yr">1885</span><div><b>한성전보총국, 첫 전신</b><p>9월 28일 한성(서울)과 제물포(인천)가 전선으로 연결되어 전보를 주고받았어요.</p>
+        <a href="https://encykorea.aks.ac.kr/Article/E0061753" target="_blank" rel="noopener">출처: 한국민족문화대백과사전</a></div></div>
+      <div class="ev"><span class="yr">1927</span><div><b>경성방송국, 첫 라디오 방송</b><p>2월 16일 경성방송국(JODK)이 우리나라 첫 라디오 방송을 시작했어요. 전선 없이 공기를 타고 온 첫 전파예요.</p>
+        <a href="https://theme.archives.go.kr/next/koreaOfRecord/radio.do" target="_blank" rel="noopener">출처: 국가기록원</a></div></div>
+    </li>
+    <li>
+      <p class="no">장면 3</p>
+      <h3>전화 교환기를 우리 손으로</h3>
+      <div class="ev"><span class="yr">1984</span><div><b>TDX-1 시범 개통</b><p>외국에서 사 오던 전화 교환기를 우리 기술로 만들었어요.</p></div></div>
+      <div class="ev"><span class="yr">1986</span><div><b>TDX 상용화</b><p>우리가 만든 교환기가 실제 전화망에서 쓰이기 시작했어요.</p>
+        <a href="https://www.etri.re.kr/45th/sub05_3.html" target="_blank" rel="noopener">출처: ETRI 45주년 연구성과</a></div></div>
+    </li>
+    <li>
+      <p class="no">장면 4</p>
+      <h3>세계에서 제일 먼저 켠 CDMA와 5G</h3>
+      <div class="ev"><span class="yr">1996</span><div><b>CDMA 휴대전화, 세계에서 처음</b><p>우리나라가 CDMA 방식 휴대전화 서비스를 세계에서 처음으로 상용화했어요. 휴대전화를 디지털로 바꾼 첫 나라예요.</p>
+        <a href="https://www.etri.re.kr/45th/sub05_8.html" target="_blank" rel="noopener">출처: 한국전자통신연구원(ETRI)</a></div></div>
+      <div class="ev"><span class="yr">2019</span><div><b>5G, 세계에서 처음</b><p>4월 3일 밤 11시, 우리나라에서 세계 첫 5G 스마트폰 개통이 이루어졌어요.</p>
+        <a href="https://www.korea.kr/news/policyNewsView.do?newsId=148859737" target="_blank" rel="noopener">출처: 대한민국 정책브리핑</a></div></div>
+    </li>
+  </ol>
+  <p class="banner">지금, 여러분 손안의 와이파이</p>
+
+  <h3>ICT가 뭘까?</h3>
+  <div class="ict">
+    <div><b>I</b><span>Information</span><em>정보</em></div>
+    <div><b>C</b><span>Communication</span><em>통신</em></div>
+    <div><b>T</b><span>Technology</span><em>기술</em></div>
+  </div>
+  <p>정보를 멀리 떨어진 곳까지 전달하고 처리하는 기술이에요. 와이파이, 라디오, 인터넷이 모두 ICT에 속해요.</p>
+  <p class="fine">다음은 6G예요. 아직 서비스는 없고, 2030년쯤 나올 것으로 보고 있어요.</p>
 </section>
 
 <section id="play">
   <p class="eyebrow">전파 놀이터</p>
-  <h2>공유기와 장애물을 배치해 보세요</h2>
-  <p>항목을 고른 뒤 지도를 누르면 배치돼요. 거리가 멀어지거나 장애물이 있으면 신호가 약해지는 것을 확인할 수 있어요.</p>
+  <h2>전파가 약해지는 다섯 가지 이유</h2>
+  <ul class="reasons">
+    <li><span class="sig5" style="--c: var(--s4)" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span><b>거리</b><span>멀수록 약해요</span></li>
+    <li><span class="sig5" style="--c: var(--s3)" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span><b>벽</b><span>두꺼울수록 약해요</span></li>
+    <li><span class="sig5" style="--c: var(--s2)" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></span><b>물</b><span>전파를 흡수해요</span></li>
+    <li><span class="sig5" style="--c: var(--s1)" aria-hidden="true"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span><b>사람 몸</b><span>몸의 60~70%가 물</span></li>
+    <li><span class="sig5" style="--c: var(--s0)" aria-hidden="true"><i class="f"></i><i></i><i></i><i></i><i></i></span><b>금속</b><span>전파를 튕겨 내요</span></li>
+  </ul>
+  <p>공유기를 옮기고 벽과 물통을 놓아 보면서 확인해요. 항목을 고른 뒤 지도를 누르면 배치돼요.</p>
   <div class="play">
     <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
     <div class="tools" id="playTools" role="group" aria-label="놓을 것 고르기">
@@ -77,30 +158,96 @@
   </div>
 </section>
 
-<section id="home">
-  <p class="eyebrow">탐정 미션 · 우리 집 와이파이 명당 찾기</p>
-  <h2>미션: 우리 집에서 와이파이 신호가 가장 강한 방을 찾아라!</h2>
-  <p>탐정단의 다음 사건 현장은 우리 집이에요. 방마다 이동해 폰 화면 상단의 와이파이 신호 막대를 확인하고 입력해 주세요. 기록은 이 폰에만 저장되고 외부로 전송되지 않아요.</p>
-  <div class="rooms" id="rooms"></div>
-  <form class="addroom" id="addRoom">
-    <label for="roomName" class="sr">방 이름</label>
-    <input id="roomName" maxlength="12" placeholder="다른 방 이름 (예: 베란다)" autocomplete="off">
-    <button class="btn small" type="submit">방 추가</button>
-  </form>
-  <div class="result" id="homeResult" aria-live="polite"></div>
-  <div class="tips">
-    <b>탐정의 추리 노트: 명당을 넓히는 방법</b>
-    <ul>
-      <li>공유기는 집 가운데, 바닥보다 높은 곳에 두면 신호가 고르게 전달돼요.</li>
-      <li>어항, 물통, 냉장고처럼 물과 금속이 있는 곳 옆은 피해요. 전파를 흡수하거나 반사해요.</li>
-      <li>전파가 벽과 문을 여러 번 통과해야 하는 방은 신호가 약해져요.</li>
-    </ul>
-  </div>
-  <button class="btn small ghost" id="homeReset">기록 모두 지우기</button>
+<section id="antenna">
+  <p class="eyebrow">안테나 관찰</p>
+  <h2>안테나 길이는 파장을 따라가요</h2>
+  <ul class="ants">
+    <li><b>옥상 TV 안테나</b><span class="wl">파장 1~5m</span><span class="al">가로대 1m 넘게</span><i class="len" style="--f: 1"></i></li>
+    <li><b>거실 토끼귀 안테나</b><span class="wl">파장 1~5m</span><span class="al">한 팔 1m</span><i class="len" style="--f: .82"></i></li>
+    <li><b>자동차 라디오</b><span class="wl">FM 파장 3m</span><span class="al">안테나 75cm</span><i class="len" style="--f: .71"></i></li>
+    <li><b>30년 전 휴대폰</b><span class="wl">파장 35cm</span><span class="al">안테나 9cm</span><i class="len" style="--f: .23"></i></li>
+    <li class="wifi"><b>탐정 노드 와이파이</b><span class="wl">파장 12cm</span><span class="al">안테나 3cm</span><i class="len" style="--f: .14"></i></li>
+  </ul>
+  <p class="banner"><b>파장의 4분의 1이면 돼요.</b> <span>느리게 떨리는 전파는 파장이 길어 안테나도 길어요. 와이파이는 3cm라 칩 위에 들어가요.</span></p>
 
-  <div class="mission2">
-    <p class="eyebrow">탐정 미션 2 · 내 폰의 안테나를 찾아라</p>
-    <h3>와이파이를 잡는 안테나는 화면이 아니라 테두리 안에 숨어 있어요</h3>
+  <h3>차 안테나는 어디로 갔을까요</h3>
+  <ol class="cars">
+    <li><span class="era">1980~90년대</span><b>긴 막대 안테나</b><span>FM 파장 3m의 4분의 1, 75cm. 전동으로 올라오는 차도 많았어요.</span></li>
+    <li><span class="era">2000년대</span><b>짧아지고 숨어요</b><span>짧은 막대로 줄이고, 뒷유리 열선 사이에 안테나를 그려 넣었어요.</span></li>
+    <li><span class="era">2010년대부터</span><b>샤크핀 하나에 다 모았어요</b><span>6cm 지느러미 안에 GPS(19cm 파장), LTE, DMB, 라디오 안테나가 함께 있어요.</span></li>
+  </ol>
+  <p class="banner"><b>사라진 게 아니에요.</b> <span>작아지고, 숨고, 한곳에 모였어요. 폰 안테나도 똑같은 길을 왔어요.</span></p>
+  <p>내 폰의 안테나는 어디에 있을까요? <a href="#mission2">탐정 미션 2</a>에서 직접 찾아봐요.</p>
+</section>
+
+<section id="map">
+  <p class="eyebrow">양곡도서관 전파지도</p>
+  <h2>오늘 측정한 세 가지 신호</h2>
+  <div class="sigs">
+    <div><b>우리 공유기</b><em>한 대</em><span>강연자 노트북 핫스팟</span></div>
+    <div><b>도서관 와이파이</b><em>여러 대</em><span>어디서나 잘 되게 자리를 설계</span></div>
+    <div><b>휴대폰 데이터</b><em>기지국</em><span>건물 밖 큰 안테나</span></div>
+  </div>
+  <div class="soon">
+    <div class="bars4" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <p><b>10월 31일 강연이 끝나면 탐정단이 함께 만든 지도가 여기에 올라와요.</b><br>세 신호의 지도를 나란히 비교해 볼 수 있어요.</p>
+  </div>
+</section>
+
+<section id="ai">
+  <p class="eyebrow">AI와 전파</p>
+  <h2>AI는 전파를 타고 와요</h2>
+  <ol class="aiflow" aria-label="질문, 전파, 데이터센터, 전파, 답">
+    <li>질문</li><li class="w">전파</li><li class="dc">데이터<wbr>센터</li><li class="w">전파</li><li>답</li>
+  </ol>
+  <p>AI의 두뇌는 멀리 있는 데이터센터에 있어요. 질문은 전파를 타고 가고, 답도 전파를 타고 돌아와요. 챗봇, 번역, 음성 비서 같은 AI는 대부분 데이터센터에서 계산해요. 폰 안에서 바로 돌아가는 작은 AI도 있지만, 큰 AI일수록 빠르고 안정된 통신이 꼭 필요해요. 자율주행차, 스마트 공장, 원격 진료도 마찬가지예요.</p>
+  <p class="callout">전파가 끊기면 AI도 대답할 수 없어요</p>
+  <p class="fine">직접 확인해 보세요: AI에게 질문한 뒤 비행기 모드를 켜고 다시 물어보면 어떻게 될까요?</p>
+</section>
+
+<section id="jobs">
+  <p class="eyebrow">진로</p>
+  <h2>전파를 다루는 사람들</h2>
+  <div class="jobs">
+    <div><b>네트워크 엔지니어</b><span>학교, 회사, 도서관의 통신망을 설계하고 운영해요.</span></div>
+    <div><b>무선 설계 전문가</b><span>신호 세기를 측정해 공유기와 기지국 자리를 정해요. 오늘 탐정단이 만든 전파지도가 바로 이 일이에요.</span></div>
+    <div><b>통신 장비 개발자</b><span>공유기, 폰, 기지국에 들어가는 안테나와 장비를 만들어요.</span></div>
+  </div>
+  <p class="banner">AI 시대에도 꼭 필요한 와이파이와 통신망, 정보통신학과에서 배워요</p>
+  <p>이런 일을 배우는 곳 중 하나가 <a href="https://www.ict.ac.kr" target="_blank" rel="noopener">ICT폴리텍대학</a> 정보통신학과예요.</p>
+</section>
+
+<section id="home">
+  <p class="eyebrow">탐정 미션</p>
+  <h2>집에서 하는 탐정 미션</h2>
+  <p>탐정단의 다음 사건 현장은 우리 집이에요. 미션 기록은 이 폰에만 저장되고 외부로 전송되지 않아요.</p>
+
+  <div class="mission" id="mission1">
+    <p class="eyebrow">미션 1</p>
+    <h3>우리 집에서 와이파이 신호가 가장 강한 방을 찾아라!</h3>
+    <p>방마다 이동해 폰 화면 위쪽의 와이파이 막대를 보고 누르면 우리 집 명당이 나와요.</p>
+    <div class="rooms" id="rooms"></div>
+    <form class="addroom" id="addRoom">
+      <label for="roomName" class="sr">방 이름</label>
+      <input id="roomName" maxlength="12" placeholder="다른 방 이름 (예: 베란다)" autocomplete="off">
+      <button class="btn small" type="submit">방 추가</button>
+    </form>
+    <div class="result" id="homeResult" aria-live="polite"></div>
+    <div class="tips">
+      <b>탐정의 추리 노트: 명당을 넓히는 방법</b>
+      <ul>
+        <li>공유기는 집 가운데, 바닥보다 높은 곳에 두면 신호가 고르게 전달돼요.</li>
+        <li>어항, 물통, 냉장고처럼 물과 금속이 있는 곳 옆은 피해요. 전파를 흡수하거나 반사해요.</li>
+        <li>전파가 벽과 문을 여러 번 통과해야 하는 방은 신호가 약해져요.</li>
+      </ul>
+    </div>
+    <button class="btn small ghost" id="homeReset">기록 모두 지우기</button>
+  </div>
+
+  <div class="mission" id="mission2">
+    <p class="eyebrow">미션 2</p>
+    <h3>내 폰의 안테나를 찾아라!</h3>
+    <p>안테나는 화면이 아니라 테두리 안에 있어요. 먼 방에서 폰 위쪽 끝을 감싸 보면 안테나 자리를 알 수 있어요.</p>
     <div class="ant">
       <svg viewBox="0 0 120 220" role="img" aria-label="폰 그림. 위쪽과 아래쪽 테두리에 안테나 선이 있다">
         <rect x="14" y="6" width="92" height="208" rx="18" fill="var(--paper)" stroke="var(--ink2)" stroke-width="4"/>
@@ -129,59 +276,6 @@
   </div>
 </section>
 
-<section id="learn">
-  <p class="eyebrow">더 알아보기</p>
-  <h2>ICT가 뭘까?</h2>
-  <div class="ict">
-    <div><b>I</b><span>Information</span><em>정보</em></div>
-    <div><b>C</b><span>Communication</span><em>통신</em></div>
-    <div><b>T</b><span>Technology</span><em>기술</em></div>
-  </div>
-  <p>정보를 멀리 떨어진 곳까지 전달하고 처리하는 기술이에요. 와이파이, 라디오, 인터넷이 모두 ICT에 속해요.</p>
-
-  <h3>우리나라 전파 이야기</h3>
-  <ol class="timeline">
-    <li><span class="yr">1885</span><div><b>한성전보총국, 첫 전신</b><p>9월 28일 한성(서울)과 제물포(인천)가 전선으로 연결되어 전보를 주고받았어요.</p>
-      <a href="https://encykorea.aks.ac.kr/Article/E0061753" target="_blank" rel="noopener">출처: 한국민족문화대백과사전</a></div></li>
-    <li><span class="yr">1927</span><div><b>경성방송국, 첫 라디오 방송</b><p>2월 16일 경성방송국(JODK)이 우리나라 첫 라디오 방송을 시작했어요. 전선 없이 전파로 소리를 전송하기 시작했어요.</p>
-      <a href="https://theme.archives.go.kr/next/koreaOfRecord/radio.do" target="_blank" rel="noopener">출처: 국가기록원</a></div></li>
-    <li><span class="yr">1996</span><div><b>CDMA 휴대전화, 세계에서 처음</b><p>우리나라가 CDMA 방식 휴대전화 서비스를 세계에서 처음으로 상용화했어요.</p>
-      <a href="https://www.etri.re.kr/45th/sub05_8.html" target="_blank" rel="noopener">출처: 한국전자통신연구원(ETRI)</a></div></li>
-    <li><span class="yr">2019</span><div><b>5G, 세계에서 처음</b><p>4월 3일 밤 11시, 우리나라에서 세계 첫 5G 스마트폰 개통이 이루어졌어요.</p>
-      <a href="https://www.korea.kr/news/policyNewsView.do?newsId=148859737" target="_blank" rel="noopener">출처: 대한민국 정책브리핑</a></div></li>
-  </ol>
-  <p class="fine">다음은 6G예요. 아직 서비스는 없고, 여러분이 어른이 될 즈음 쓰게 될 거예요.</p>
-
-  <h3>AI는 전파를 타고 와요</h3>
-  <div class="ai">
-    <ol class="aiflow">
-      <li><b>질문</b><span>내 폰에서 AI에게 물어봐요</span></li>
-      <li><b>전파</b><span>와이파이와 휴대폰 데이터가 질문을 실어 보내요</span></li>
-      <li><b>데이터센터</b><span>멀리 있는 컴퓨터에서 AI가 답을 만들어요</span></li>
-      <li><b>전파</b><span>답이 다시 전파를 타고 돌아와요</span></li>
-    </ol>
-    <p>챗봇, 번역, 음성 비서 같은 AI는 대부분 멀리 있는 데이터센터에서 계산해요. 그래서 <b>전파가 끊기면 AI도 대답할 수 없어요.</b> 폰 안에서 바로 돌아가는 작은 AI도 있지만, 큰 AI일수록 빠르고 안정된 통신이 꼭 필요해요. 자율주행차, 스마트 공장, 원격 진료도 마찬가지예요.</p>
-    <p class="fine">직접 확인해 보세요: AI에게 질문한 뒤 비행기 모드를 켜고 다시 물어보면 어떻게 될까요?</p>
-  </div>
-
-  <h3>전파를 다루는 사람들</h3>
-  <div class="jobs">
-    <div><b>네트워크 엔지니어</b><span>학교, 회사, 도서관의 통신망을 설계하고 운영해요.</span></div>
-    <div><b>무선 설계 전문가</b><span>신호 세기를 측정해 공유기와 기지국의 위치를 설계해요. 오늘 탐정단이 한 전파지도 작성이 바로 이 일이에요.</span></div>
-    <div><b>통신 장비 개발자</b><span>공유기, 폰, 기지국 안의 전자 회로와 프로그램을 만들어요.</span></div>
-  </div>
-  <p>이런 일을 배우는 곳 중 하나가 <a href="https://www.ict.ac.kr" target="_blank" rel="noopener">ICT폴리텍대학</a> 정보통신학과예요.</p>
-</section>
-
-<section id="map">
-  <p class="eyebrow">양곡도서관 전파지도</p>
-  <h2>탐정단이 함께 만든 지도</h2>
-  <div class="soon">
-    <div class="bars4" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <p><b>10월 31일 강연이 끝나면 여기에 올라와요.</b><br>우리 공유기, 도서관 와이파이, 휴대폰 데이터 세 지도를 비교해 볼 수 있어요.</p>
-  </div>
-</section>
-
 <section class="prev">
   <p class="eyebrow">지난 강연</p>
   <h2>2025 · 소리의 과학</h2>
@@ -192,8 +286,9 @@
 </main>
 
 <footer>
-  <p>와이파이 탐정단 · 이수미 · ICT폴리텍대학 정보통신학과</p>
-  <p>이 사이트는 방문자 정보를 모으지 않아요. 명당 찾기 기록은 이 기기에만 저장돼요.</p>
+  <p>10월의 하늘 2026 · 김포시양곡도서관 · 와이파이 탐정단</p>
+  <p>이수미 · ICT폴리텍대학 정보통신학과</p>
+  <p>이 사이트는 방문자 정보를 모으지 않아요. 미션 기록은 이 기기에만 저장돼요.</p>
 </footer>
 
 <script src="shared/signal.js"></script>
