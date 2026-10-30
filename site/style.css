@@ -157,6 +157,16 @@ main section::before { content: ""; position: absolute; top: 36px; right: 2px; w
 .siglegend li.dk { color: #17264A; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
 .readout { margin: 0; font-family: var(--mono); font-size: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 76px; white-space: pre-wrap; }
+/* 놀이터 예시 지도: PC는 3칸 격자, 휴대폰은 옆으로 넘기는 줄 */
+.gallery { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.gallery li { background: var(--card); border-radius: 12px; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 3px; }
+.gallery img { width: 100%; height: auto; display: block; border-radius: 8px; margin-bottom: 5px; }
+.gallery b { font-size: 15px; font-weight: 800; padding: 0 4px; }
+.gallery span { font-size: 13.5px; color: var(--ink3); line-height: 1.45; padding: 0 4px; }
+@media (max-width: 600px) {
+  .gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; margin: 0 -16px; padding: 0 16px 6px; }
+  .gallery li { flex: 0 0 80%; scroll-snap-align: center; }
+}
 
 .ants { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .ants li { background: var(--card); border-radius: 14px; padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; align-items: baseline; }
