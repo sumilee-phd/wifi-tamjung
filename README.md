@@ -27,12 +27,14 @@
 ```powershell
 .\run.ps1            # 실제 노드·폰으로 강연
 .\run.ps1 -Virtual   # 가상 노드로 시험
+.\run.ps1 -Live      # 공개 사이트 실시간 지도에도 구역별 값을 올림 (노트북 인터넷 필요)
 ```
 
 macOS·Linux 개발용: `./run.sh --virtual`
 
 - 발표 화면: http://localhost:8600 (숫자 키 0~7로 단계 이동, 좌우 화살표·리모컨으로 다음, F 전체 화면)
 - 탐정 폰: 핫스팟 접속 후 대기 화면의 QR (`/p`)
+- 실시간 공개 지도(`-Live`): 구역별 가운데 값과 표본 수만 ntfy.sh 공개 채널(`app/config.json`의 live.topic)로 올리고, 사이트 `site/live.js`가 받아 그린다. 값이 바뀌면 20초 간격, 변화가 없으면 180초마다 올린다(ntfy.sh 무료 한도는 IP당 하루 250건). 시험할 때는 `WT_LIVE_TOPIC`·`WT_LIVE_INTERVAL` 환경 변수와 사이트 주소 `?live=시험채널`을 쓴다.
 - 측정 노드 펌웨어: `firmware/wifi_tamjung_node/` (secrets.example.h를 secrets.h로 복사해 핫스팟 이름·암호 입력)
 
 ## 공개 사이트 (wifi-tamjung.vercel.app)

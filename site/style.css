@@ -188,11 +188,19 @@ main section::before { content: ""; position: absolute; top: 36px; right: 2px; w
 .sigs b { font-weight: 800; font-size: 18px; }
 .sigs em { font-style: normal; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.3; color: var(--accent); }
 .sigs span { color: var(--ink3); font-size: 15px; }
-.soon { background: var(--paper); border: 2px dashed var(--line); border-radius: 16px; padding: 22px 18px; display: flex; gap: 18px; align-items: center; }
-.bars4 { display: flex; align-items: flex-end; gap: 5px; height: 48px; flex: none; }
-.bars4 i { width: 12px; border-radius: 3px; }
-.bars4 i:nth-child(1) { height: 25%; background: var(--s1); } .bars4 i:nth-child(2) { height: 50%; background: var(--s2); }
-.bars4 i:nth-child(3) { height: 75%; background: var(--s3); } .bars4 i:nth-child(4) { height: 100%; background: var(--s4); }
+/* 실시간 전파지도: 노트북 강연 앱이 ntfy 공개 채널로 올린 구역별 값을 그린다 (live.js) */
+.live { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.livehead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 15px; }
+.livehead span:last-child { color: var(--ink3); font-size: 14px; }
+.livedot { width: 12px; height: 12px; border-radius: 50%; background: var(--line); flex: none; }
+.live.on .livedot { background: var(--s4); box-shadow: 0 0 0 0 rgba(30, 158, 79, .6); animation: livepulse 1.6s infinite; }
+@keyframes livepulse { 70% { box-shadow: 0 0 0 10px rgba(30, 158, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(30, 158, 79, 0); } }
+@media (prefers-reduced-motion: reduce) { .live.on .livedot { animation: none; } }
+.liveseg { display: flex; gap: 6px; flex-wrap: wrap; }
+.liveseg button { font: inherit; font-size: 14px; font-weight: 800; color: var(--ink); background: var(--paper); border: 2px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.liveseg button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.liveseg button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+.live canvas { width: 100%; max-width: 420px; height: auto; align-self: center; border-radius: 10px; border: 1px solid var(--line); display: block; }
 
 .aiflow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 26px; }
 .aiflow li { position: relative; border-radius: 14px; min-height: 74px; padding: 8px 4px; display: grid; place-items: center; text-align: center;

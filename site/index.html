@@ -207,9 +207,19 @@
     <div><b>도서관 와이파이</b><em>여러 대</em><span>어디서나 잘 되게 자리를 설계</span></div>
     <div><b>휴대폰 데이터</b><em>기지국</em><span>건물 밖 큰 안테나</span></div>
   </div>
-  <div class="soon">
-    <div class="bars4" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <p><b>10월 31일 강연이 끝나면 탐정단이 함께 만든 지도가 여기에 올라와요.</b><br>세 가지 신호의 지도를 나란히 비교해 볼 수 있어요.</p>
+  <div class="live" id="live">
+    <div class="livehead">
+      <span class="livedot" id="liveDot" aria-hidden="true"></span>
+      <b id="liveState">강연이 시작되면 실시간으로 채워져요</b>
+      <span id="liveAge"></span>
+    </div>
+    <div class="liveseg" id="liveNets" role="group" aria-label="볼 신호 고르기">
+      <button class="on" data-net="ap" aria-pressed="true">우리 공유기</button>
+      <button data-net="lib" aria-pressed="false">도서관 와이파이</button>
+      <button data-net="cell" aria-pressed="false">휴대폰 데이터</button>
+    </div>
+    <canvas id="liveMap" width="600" height="840" aria-label="강연장 실시간 전파지도"></canvas>
+    <p class="fine">10월 31일 오후 3시 강연 중에 탐정단이 잰 값이 여기에 실시간으로 올라와요. 구역마다 잰 값의 가운데 값으로 색을 칠하고, 구역 사이는 가까운 구역 값으로 채워요. 강연이 끝나면 완성된 지도도 올려요.</p>
   </div>
 </section>
 
@@ -313,5 +323,6 @@
 <script src="shared/signal.js"></script>
 <script src="shared/playground.js"></script>
 <script src="app.js"></script>
+<script src="live.js"></script>
 </body>
 </html>

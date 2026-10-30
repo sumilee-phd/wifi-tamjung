@@ -12,7 +12,7 @@
 
 측정망(net)은 셋이다: ap 우리 공유기(노트북 핫스팟), lib 도서관 와이파이(ESP32 스캔), cell 휴대폰 데이터(폰 막대).
 
-실행: python app/server.py
+실행: python app/server.py          (--live: 공개 사이트 실시간 지도로 구역별 값을 함께 올린다)
 """
 import base64
 import csv
@@ -20,8 +20,10 @@ import json
 import os
 import socket
 import statistics
+import sys
 import threading
 import time
+import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -158,6 +160,43 @@ def snapshot():
         return {"session": {"id": s["id"], "label": s["label"], "started": s["started"],
                             "count": len(s["samples"])}, "race": race,
                 "nodes": nodes, "cells": cells, "cell_gen": cell_gen, "votes": s["votes"], "server_time": now}
+
+
+def live_payload():
+    """공개 사이트에 올릴 값: 구역별 중앙값과 표본 수, 지도 그릴 방 배치뿐. 폰 번호·노드 이름·IP는 넣지 않는다."""
+    snap = snapshot()
+    cells = {net: {z: [c["rssi"], c["n"]] for z, c in zs.items() if c["rssi"] is not None} for net, zs in snap["cells"].items()}
+    R = CONFIG["room"]
+    return {"v": 1, "t": round(snap["server_time"]), "label": snap["session"]["label"],
+            "alive": sum(1 for n in snap["nodes"] if not n["lost"]), "cells": cells,
+            "room": {k: R[k] for k in ("width_m", "depth_m", "stage_depth_m", "rows", "row_start_m", "row_gap_m", "blocks")},
+            "zones": {c: [z["name"]] + z["pos"] for c, z in CONFIG["zones"].items()}, "ap": CONFIG["ap"]["pos"], "nets": CONFIG["nets"]}
+
+
+def live_loop():
+    """ntfy 공개 채널로 올린다. 값이 바뀔 때만, 최소 간격을 두고, 가끔 살아 있다는 신호를 보낸다.
+    ntfy.sh 무료는 IP당 하루 250건이라 간격을 넉넉히 둔다. 실패해도 강연 앱에는 영향이 없다."""
+    L = CONFIG["live"]
+    url = "https://ntfy.sh/" + os.environ.get("WT_LIVE_TOPIC", L["topic"])  # 시험할 때는 다른 채널로
+    gap = float(os.environ.get("WT_LIVE_INTERVAL", L["min_interval"]))
+    last_key, last_sent, sent, warned = None, 0.0, 0, False
+    print(f"실시간 지도: {url} (값이 바뀌면 {gap:g}초 간격, 변화 없으면 {L['heartbeat']}초마다)")
+    while True:
+        time.sleep(gap)
+        try:
+            body = live_payload()
+            key = json.dumps([body["label"], body["cells"], body["alive"]], sort_keys=True)
+            if key == last_key and time.time() - last_sent < L["heartbeat"]:
+                continue
+            data = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            urllib.request.urlopen(urllib.request.Request(url, data=data, method="POST"), timeout=8).read()
+            last_key, last_sent, sent, warned = key, time.time(), sent + 1, False
+            if sent % 20 == 0:
+                print(f"실시간 지도: {sent}건 올림")
+        except Exception as e:  # 인터넷 끊김·한도 초과 등. 다음 차례에 다시 시도
+            if not warned:
+                print("실시간 지도 올리기 실패(강연 앱은 그대로 동작):", e)
+                warned = True
 
 
 def save_session(s, png_bytes=None):
@@ -349,6 +388,8 @@ class Handler(SimpleHTTPRequestHandler):
 
 def main():
     threading.Thread(target=udp_loop, daemon=True).start()
+    if "--live" in sys.argv:
+        threading.Thread(target=live_loop, daemon=True).start()
     httpd = ThreadingHTTPServer(("0.0.0.0", HTTP_PORT), Handler)
     print(f"강연 앱: http://localhost:{HTTP_PORT}")
     print("노드가 보낼 주소:", ", ".join(local_ips()) or "(확인 불가)", f"UDP {UDP_PORT}")

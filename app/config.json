@@ -131,5 +131,10 @@
     "ap": "우리 공유기(노트북)",
     "lib": "도서관 와이파이",
     "cell": "휴대폰 데이터(LTE·5G)"
+  },
+  "live": {
+    "topic": "wifi-tamjung-yanggok-fbd09edb9d",
+    "min_interval": 20,
+    "heartbeat": 180
   }
 }
