@@ -149,6 +149,16 @@
       <button class="tool" data-m="erase" aria-pressed="false"><b>지우기</b><small>한 칸씩</small></button>
     </div>
     <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
+    <div class="siglegend">
+      <p aria-hidden="true"><b>잘 터져요</b><b>잘 안 터져요</b></p>
+      <ol aria-label="지도 색이 뜻하는 신호 세기, 강한 순서">
+        <li style="--c: var(--s4)">매우 강함</li>
+        <li class="dk" style="--c: var(--s3)">강함</li>
+        <li class="dk" style="--c: var(--s2)">보통</li>
+        <li style="--c: var(--s1)">약함</li>
+        <li style="--c: var(--s0)">매우 약함</li>
+      </ol>
+    </div>
     <div class="row">
       <button class="btn small" id="playPreset">도서관 예시</button>
       <button class="btn small" id="playClear">모두 지우기</button>
