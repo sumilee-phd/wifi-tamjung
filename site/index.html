@@ -138,17 +138,17 @@
     <li><span class="sig5" style="--c: var(--s1)" aria-hidden="true"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span><b>사람 몸</b><span>몸의 60~70%가 물</span></li>
     <li><span class="sig5" style="--c: var(--s0)" aria-hidden="true"><i class="f"></i><i></i><i></i><i></i><i></i></span><b>금속</b><span>전파를 튕겨 내요</span></li>
   </ul>
-  <p>공유기를 옮기고 벽과 물통을 놓아 보면서 확인해요. 항목을 고른 뒤 지도를 누르면 배치돼요.</p>
+  <p>공유기를 옮기고 벽과 물통을 놓아 보면서 확인해요. 아래 버튼을 고른 뒤 지도를 누르면 그 자리에 놓여요.</p>
   <div class="play">
-    <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
     <div class="tools" id="playTools" role="group" aria-label="놓을 것 고르기">
-      <button class="tool on" data-m="ap">공유기</button>
-      <button class="tool" data-m="wall">벽 8dB</button>
-      <button class="tool" data-m="water">물통 12dB</button>
-      <button class="tool" data-m="people">사람 6dB</button>
-      <button class="tool" data-m="foil">호일 25dB</button>
-      <button class="tool" data-m="erase">지우기</button>
+      <button class="tool on" data-m="ap" aria-pressed="true"><b>공유기</b><small>옮기기</small></button>
+      <button class="tool" data-m="wall" aria-pressed="false"><b>벽</b><small>8dB</small></button>
+      <button class="tool" data-m="water" aria-pressed="false"><b>물통</b><small>12dB</small></button>
+      <button class="tool" data-m="people" aria-pressed="false"><b>사람</b><small>6dB</small></button>
+      <button class="tool" data-m="foil" aria-pressed="false"><b>호일</b><small>25dB</small></button>
+      <button class="tool" data-m="erase" aria-pressed="false"><b>지우기</b><small>한 칸씩</small></button>
     </div>
+    <canvas id="playCanvas" width="960" height="560" aria-label="전파 놀이터 지도"></canvas>
     <div class="row">
       <button class="btn small" id="playPreset">도서관 예시</button>
       <button class="btn small" id="playClear">모두 지우기</button>

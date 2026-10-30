@@ -132,9 +132,24 @@ main section::before { content: ""; position: absolute; top: 36px; right: 2px; w
 
 .play { display: flex; flex-direction: column; gap: 10px; }
 .play canvas { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; cursor: crosshair; }
-.tools { display: flex; flex-wrap: wrap; gap: 6px; }
-.tool { font: inherit; font-size: 15px; font-weight: 800; border: 2px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 10px; padding: 6px 12px; cursor: pointer; }
-.tool.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+/* 도구 버튼: 지도 칸과 같은 아이콘 + 아래로 눌리는 그림자 */
+.tools { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+@media (max-width: 600px) { .tools { grid-template-columns: repeat(3, 1fr); } }
+.tool { display: flex; flex-direction: column; align-items: center; gap: 5px; font: inherit; color: var(--ink); background: var(--paper);
+  border: 2px solid var(--line); border-radius: 12px; box-shadow: 0 4px 0 var(--line); padding: 10px 4px 8px; cursor: pointer;
+  transition: transform .08s, box-shadow .08s, border-color .15s; }
+.tool:hover { border-color: var(--accent); }
+.tool:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.tool b { font-size: 16px; font-weight: 800; line-height: 1.2; }
+.tool small { font-size: 13px; font-weight: 700; line-height: 1; color: var(--ink3); }
+.tool.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 0 var(--navy); }
+.tool.on small { color: var(--accent-ink); }
+.tic { width: 36px; height: 36px; border-radius: 8px; background: #1B5838; display: grid; place-items: center; }
+.tic svg { width: 24px; height: 24px; fill: #FFFFFF; }
+.tic-ap { background: #1E9E4F; }
+.tic-ap svg { width: 30px; height: 30px; }
+.tic-erase { background: transparent; border: 2px dashed currentColor; }
+.tic-erase svg { width: 18px; height: 18px; fill: currentColor; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
 .readout { margin: 0; font-family: var(--mono); font-size: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 76px; white-space: pre-wrap; }
 

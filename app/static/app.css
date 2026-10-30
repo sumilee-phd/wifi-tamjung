@@ -88,6 +88,13 @@ section.center { display: flex; flex-direction: column; align-items: center; jus
 .tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .tool { border: 2px solid var(--line); background: var(--paper); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 18px; }
 .tool.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tool { display: inline-flex; align-items: center; gap: 8px; padding-left: 8px; }
+.tic { width: 30px; height: 30px; border-radius: 7px; background: #1B5838; display: grid; place-items: center; flex: none; }
+.tic svg { width: 20px; height: 20px; fill: #fff; }
+.tic-ap { background: #1E9E4F; }
+.tic-ap svg { width: 26px; height: 26px; }
+.tic-erase { background: transparent; border: 2px dashed currentColor; }
+.tic-erase svg { width: 15px; height: 15px; fill: currentColor; }
 .readout { font-family: var(--mono); font-size: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0; min-height: 96px; white-space: pre-wrap; }
 
 /* 투표 */

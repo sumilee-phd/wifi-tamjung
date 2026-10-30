@@ -436,6 +436,7 @@
 
     var play = WTPlayground.mount($("playCanvas"), { readout: $("playReadout") });
     document.querySelectorAll("#playTools .tool").forEach(function (b) {
+      b.insertAdjacentHTML("afterbegin", WTPlayground.icon(b.dataset.m));
       b.addEventListener("click", function () {
         play.setMode(b.dataset.m);
         document.querySelectorAll("#playTools .tool").forEach(function (o) { o.classList.toggle("on", o === b); });
