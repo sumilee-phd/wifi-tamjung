@@ -72,7 +72,7 @@
     <li><b>전파지도 만들기</b><span>탐정 폰과 탐정 노드로 12분 동안 측정하고, 예측과 겹쳐 봐요.</span></li>
     <li><b>반전 실험</b><span>물통, 손, 알루미늄 호일로 신호 막기 챌린지를 해요.</span></li>
     <li><b>안테나 관찰</b><span>안테나 길이와 파장, 차 안테나와 내 폰의 안테나를 살펴봐요.</span></li>
-    <li><b>양곡도서관 전파지도</b><span>오늘 측정한 세 가지 신호를 비교하고 지도를 완성해요.</span></li>
+    <li><b>양곡도서관 전파지도</b><span>우리 공유기와 휴대폰 데이터를 측정해 지도를 완성해요.</span></li>
     <li><b>AI와 진로</b><span>AI가 전파를 타고 오는 길과 전파를 다루는 사람들을 만나요.</span></li>
     <li><b>탐정 미션과 질문</b><span>집에서 할 미션 두 가지를 받고, 궁금한 것을 물어봐요.</span></li>
   </ol>
@@ -201,10 +201,10 @@
 
 <section id="map">
   <p class="eyebrow">양곡도서관 전파지도</p>
-  <h2>오늘 측정한 세 가지 신호</h2>
+  <h2>강연장의 세 가지 신호</h2>
   <div class="sigs">
     <div><b>우리 공유기</b><em>한 대</em><span>강연자 노트북 핫스팟</span></div>
-    <div><b>도서관 와이파이</b><em>여러 대</em><span>어디서나 잘 되게 자리를 설계</span></div>
+    <div><b>도서관 와이파이</b><em>여러 대</em><span>어디서나 잘 되게 자리를 설계. 오늘은 재지 않았어요</span></div>
     <div><b>휴대폰 데이터</b><em>기지국</em><span>건물 밖 큰 안테나</span></div>
   </div>
   <div class="live" id="live">
@@ -215,7 +215,6 @@
     </div>
     <div class="liveseg" id="liveNets" role="group" aria-label="볼 신호 고르기">
       <button class="on" data-net="ap" aria-pressed="true">우리 공유기</button>
-      <button data-net="lib" aria-pressed="false">도서관 와이파이</button>
       <button data-net="cell" aria-pressed="false">휴대폰 데이터</button>
     </div>
     <canvas id="liveMap" width="600" height="840" aria-label="강연장 실시간 전파지도"></canvas>
