@@ -70,14 +70,19 @@
     ctx.fillText("앞 · TV", cv.width - 12, R.stage_depth_m * sc / 2);
 
     Object.keys(Z).forEach(function (c) {
-      var cx = Z[c][1] * sc, cy = Z[c][2] * sc, rad = ZONE_R * sc, v = vals[c], lv = v !== undefined ? S.level(v) : null;
+      var rad = ZONE_R * sc, cx = Math.max(rad + 3, Math.min(cv.width - rad - 3, Z[c][1] * sc)), cy = Z[c][2] * sc;  // 벽 쪽 구역도 원과 글자가 잘리지 않게
+      var v = vals[c], lv = v !== undefined ? S.level(v) : null;
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
       ctx.fillStyle = lv ? lv.color : "#FFFFFF"; ctx.fill();
       ctx.lineWidth = 3; ctx.strokeStyle = "#5E7178"; ctx.stroke();
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.fillStyle = lv && (lv.bars === 2 || lv.bars === 3) ? "#102026" : lv ? "#FFFFFF" : "#3E545C";
-      fitText(ctx, Z[c][0], cx, cy - (lv ? 13 : 0), rad * 2 - 10, 23);
-      if (lv) { fitText(ctx, lv.word, cx, cy + 16, rad * 2 - 10, 20); said.push(Z[c][0] + " " + lv.word); }
+      fitText(ctx, Z[c][0], cx, cy - (lv ? 25 : 0), rad * 2 - 14, 22);
+      if (lv) {
+        fitText(ctx, v + " dBm", cx, cy + 2, rad * 2 - 10, 24);
+        fitText(ctx, lv.word, cx, cy + 28, rad * 2 - 24, 18);
+        said.push(Z[c][0] + " " + v + " dBm " + lv.word);
+      }
     });
     // 노트북 핫스팟(AP)
     var ap = d.ap;
